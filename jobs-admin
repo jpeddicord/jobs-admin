@@ -1,3 +1,10 @@
 #!/usr/bin/python
 
+import gtk
+from JobsAdmin import MainWindow
 
+
+win = MainWindow()
+win.show_all()
+
+gtk.main()
