@@ -8,7 +8,7 @@ setup_info = dict(
     description='jobs-admin',
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
-    url='https://launchpad.net/jobs-admin',
+    url='https://launchpad.net/jobsadmin',
     packages=['JobsAdmin'],
     scripts=['jobs-admin'],
 )
