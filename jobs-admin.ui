@@ -23,12 +23,13 @@
             <property name="border_width">6</property>
             <property name="spacing">5</property>
             <child>
-              <object class="GtkViewport" id="viewport1">
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
-                <property name="resize_mode">queue</property>
+                <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">never</property>
+                <property name="vscrollbar_policy">automatic</property>
                 <child>
                   <object class="GtkTreeView" id="tv_jobs">
-                    <property name="width_request">150</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="model">lst_jobs</property>
@@ -38,11 +39,11 @@
                     <property name="show_expanders">False</property>
                     <child>
                       <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                        <property name="title">column</property>
+                        <property name="sort_column_id">0</property>
                         <child>
                           <object class="GtkCellRendererText" id="cellrenderertext1"/>
                           <attributes>
-                            <attribute name="markup">0</attribute>
+                            <attribute name="text">0</attribute>
                           </attributes>
                         </child>
                       </object>

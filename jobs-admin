@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
 import gtk
-from JobsAdmin import MainWindow
+from JobsAdmin import JobsAdminUI
 
 
-win = MainWindow()
-win.show_all()
+ui = JobsAdminUI()
+ui.load_jobs()
+ui.win_main.show_all()
 
 gtk.main()
