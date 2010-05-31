@@ -1,11 +1,11 @@
 
-from dbus import SystemBus, Interface
+from dbus import SystemBus, Interface, PROPERTIES_IFACE
 
 
 class RemoteJobService:
     
     def __init__(self):
-        self.jobs = []
+        self.jobs = {}
         self.bus = SystemBus()
         self.jobservice = Interface(
             self.bus.get_object('com.ubuntu.JobService', '/com/ubuntu/JobService'),
@@ -13,18 +13,28 @@ class RemoteJobService:
         )
     
     def get_all_jobs(self):
-        for job, running in self.jobservice.GetAllJobs():
-            self.jobs.append(RemoteJob(job, running))
+        for job, path, running in self.jobservice.GetAllJobs():
+            self.jobs[job] = RemoteJob(job, path, running)
         return self.jobs
     
 
 class RemoteJob:
     
-    def __init__(self, name, running):
+    def __init__(self, name, path, running):
         self.name = name
+        self.path = path
         self.running = running
+        self.props = {}
+        
+        self.bus = SystemBus()
+        self.obj = self.bus.get_object('com.ubuntu.JobService', path)
+        self.interface = Interface(self.obj, 'com.ubuntu.JobService.Job')
     
-    def __unicode__(self):
-        return self.name
+    def __repr__(self):
+        return "<RemoteJob %s>" % self.name
     
-    
+    def __getattr__(self, name):
+        if not self.props:
+            self.props = self.obj.GetAll('com.ubuntu.JobService.Job',
+                                         dbus_interface=PROPERTIES_IFACE)
+        return self.props[name]
