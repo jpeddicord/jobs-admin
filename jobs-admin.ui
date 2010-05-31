@@ -6,8 +6,8 @@
     <columns>
       <!-- column-name service -->
       <column type="gchararray"/>
-      <!-- column-name running -->
-      <column type="gboolean"/>
+      <!-- column-name weight -->
+      <column type="guint"/>
     </columns>
   </object>
   <object class="GtkWindow" id="win_main">
@@ -44,6 +44,7 @@
                           <object class="GtkCellRendererText" id="cellrenderertext1"/>
                           <attributes>
                             <attribute name="text">0</attribute>
+                            <attribute name="weight">1</attribute>
                           </attributes>
                         </child>
                       </object>
