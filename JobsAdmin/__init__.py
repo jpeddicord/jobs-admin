@@ -50,7 +50,7 @@ class JobsAdminUI:
         self.lbl_jobdesc.props.label = "<b>%s</b> - <i>%s</i>" % (
                 jobname, job.description)
         self.set_running(job.running)
-        self.set_details()
+        self.set_details(backend=job.backend)
         
     def set_running(self, running):
         if running:
