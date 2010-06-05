@@ -7,6 +7,7 @@ class JobsAdminUI:
 
     def __init__(self):
         self.jobservice = RemoteJobService()
+        self.active_job = None
         self.builder = gtk.Builder()
         self.builder.add_from_file('jobs-admin.ui')
         
@@ -32,6 +33,8 @@ class JobsAdminUI:
         
         self.tv_jobs_sel = self.tv_jobs.get_selection()
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
+        
+        self.btn_job_toggle.connect('clicked', self.job_toggle)
     
     def load_jobs(self):
         for jobname, job in self.jobservice.get_all_jobs().iteritems():
@@ -45,13 +48,20 @@ class JobsAdminUI:
         # we must have a selection at this point
         assert treeiter
         jobname = self.lst_jobs.get_value(treeiter, 0)
-        job = self.jobservice.jobs[jobname]
+        self.active_job = self.jobservice.jobs[jobname]
         # update some ui elements
         self.lbl_jobdesc.props.label = "<b>%s</b> - <i>%s</i>" % (
-                jobname, job.description)
-        self.set_running(job.running)
-        self.set_details(backend=job.backend)
-        
+                jobname, self.active_job.description)
+        self.set_running(self.active_job.running)
+        self.set_details(backend=self.active_job.backend)
+
+    def job_toggle(self, button):
+        if self.active_job.running:
+            self.active_job.stop()
+        else:
+            self.active_job.start()
+        self.set_running(self.active_job.running)
+    
     def set_running(self, running):
         if running:
             self.img_status.set_from_stock(gtk.STOCK_MEDIA_PLAY,

@@ -38,3 +38,13 @@ class RemoteJob:
             self.props = self.obj.GetAll('com.ubuntu.JobService.Job',
                                          dbus_interface=PROPERTIES_IFACE)
         return self.props[name]
+    
+    def start(self):
+        self.interface.Start()
+        # clear properties so we can get a fresh copy of the running state
+        self.props = {}
+    
+    def stop(self):
+        self.interface.Stop()
+        self.props = {}
+    
