@@ -56,11 +56,13 @@ class JobsAdminUI:
         self.set_details(backend=self.active_job.backend)
 
     def job_toggle(self, button):
-        if self.active_job.running:
-            self.active_job.stop()
-        else:
-            self.active_job.start()
-        self.set_running(self.active_job.running)
+        try:
+            if self.active_job.running:
+                self.active_job.stop()
+            else:
+                self.active_job.start()
+            self.set_running(self.active_job.running)
+        except: pass
     
     def set_running(self, running):
         if running:
