@@ -1,5 +1,6 @@
 
 from dbus import SystemBus, Interface, PROPERTIES_IFACE
+from JobsAdmin.protected import is_protected
 
 
 class RemoteJobService:
@@ -14,7 +15,8 @@ class RemoteJobService:
     
     def get_all_jobs(self):
         for job, path, running in self.jobservice.GetAllJobs():
-            self.jobs[job] = RemoteJob(job, path, running)
+            if not is_protected(job):
+                self.jobs[job] = RemoteJob(job, path, running)
         return self.jobs
     
 
