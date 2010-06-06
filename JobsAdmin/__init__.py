@@ -1,6 +1,7 @@
 
 import gtk
-from remote import RemoteJobService
+from gobject import idle_add
+from JobsAdmin.remote import RemoteJobService
 
 
 class JobsAdminUI:
@@ -56,13 +57,34 @@ class JobsAdminUI:
         self.set_details(backend=self.active_job.backend)
 
     def job_toggle(self, button):
-        try:
-            if self.active_job.running:
-                self.active_job.stop()
-            else:
-                self.active_job.start()
-            self.set_running(self.active_job.running)
-        except: pass
+        """
+        Turn a job on or off.
+        """
+        # we run this in a callback to allow GTK to redraw before we call PK
+        def do_toggle():
+            # and this is in a callback to prevent delayed interaction
+            # with disabled widgets.
+            def enable_ui():
+                self.set_waiting(False)
+            try:
+                if self.active_job.running:
+                    self.active_job.stop()
+                else:
+                    self.active_job.start()
+                self.set_running(self.active_job.running)
+            except: pass
+            idle_add(enable_ui)
+        self.set_waiting()
+        idle_add(do_toggle)
+        
+    def set_waiting(self, waiting=True):
+        """
+        Disable the UI or re-enable it for an action.
+        """
+        cursor = gtk.gdk.Cursor(gtk.gdk.WATCH if waiting else gtk.gdk.ARROW)
+        self.win_main.get_window().set_cursor(cursor)
+        for obj in self.win_main.get_children():
+            obj.props.sensitive = False if waiting else True
     
     def set_running(self, running):
         if running:

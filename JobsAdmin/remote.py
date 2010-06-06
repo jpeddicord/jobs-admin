@@ -42,11 +42,11 @@ class RemoteJob:
         return self.props[name]
     
     def start(self):
-        self.interface.Start()
+        self.interface.Start(timeout=500)
         # clear properties so we can get a fresh copy of the running state
         self.props = {}
     
     def stop(self):
-        self.interface.Stop()
+        self.interface.Stop(timeout=500)
         self.props = {}
     
