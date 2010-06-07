@@ -62,18 +62,16 @@ class JobsAdminUI:
         """
         # we run this in a callback to allow GTK to redraw before we call PK
         def do_toggle():
-            # and this is in a callback to prevent delayed interaction
-            # with disabled widgets.
-            def enable_ui():
-                self.set_waiting(False)
-            try:
-                if self.active_job.running:
-                    self.active_job.stop()
-                else:
-                    self.active_job.start()
+            # async callbacks so we don't appear to freeze
+            def reply():
                 self.set_running(self.active_job.running)
-            except: pass
-            idle_add(enable_ui)
+                self.set_waiting(False)
+            def error(e):
+                self.set_waiting(False)
+            if self.active_job.running:
+                self.active_job.stop(reply_handler=reply, error_handler=error)
+            else:
+                self.active_job.start(reply_handler=reply, error_handler=error)
         self.set_waiting()
         idle_add(do_toggle)
         

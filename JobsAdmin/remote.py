@@ -41,12 +41,14 @@ class RemoteJob:
                                          dbus_interface=PROPERTIES_IFACE)
         return self.props[name]
     
-    def start(self):
-        self.interface.Start(timeout=500)
+    def start(self, reply_handler=None, error_handler=None):
+        self.interface.Start(timeout=500,
+                reply_handler=reply_handler, error_handler=error_handler)
         # clear properties so we can get a fresh copy of the running state
         self.props = {}
     
-    def stop(self):
-        self.interface.Stop(timeout=500)
+    def stop(self, reply_handler=None, error_handler=None):
+        self.interface.Stop(timeout=500,
+                reply_handler=reply_handler, error_handler=error_handler)
         self.props = {}
     

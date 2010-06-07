@@ -1,8 +1,10 @@
 #!/usr/bin/python
 
 import gtk
+from dbus.mainloop.glib import DBusGMainLoop
 from JobsAdmin import JobsAdminUI
 
+DBusGMainLoop(set_as_default=True)
 
 ui = JobsAdminUI()
 ui.load_jobs()
