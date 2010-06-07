@@ -14,18 +14,17 @@ class RemoteJobService:
         )
     
     def get_all_jobs(self):
-        for job, path, running in self.jobservice.GetAllJobs():
+        for job, path in self.jobservice.GetAllJobs():
             if not is_protected(job):
-                self.jobs[job] = RemoteJob(job, path, running)
+                self.jobs[job] = RemoteJob(job, path)
         return self.jobs
     
 
 class RemoteJob:
     
-    def __init__(self, name, path, running):
+    def __init__(self, name, path):
         self.name = name
         self.path = path
-        self.running = running
         self.props = {}
         
         self.bus = SystemBus()
