@@ -54,7 +54,7 @@ class JobsAdminUI:
         self.lbl_jobdesc.props.label = "<b>%s</b> - <i>%s</i>" % (
                 jobname, self.active_job.description)
         self.set_running(self.active_job.running)
-        self.set_details(backend=self.active_job.backend)
+        self.set_details(self.active_job)
 
     def job_toggle(self, button):
         """
@@ -97,13 +97,31 @@ class JobsAdminUI:
                                                gtk.ICON_SIZE_BUTTON)
             self.btn_job_toggle.props.label = "_Start"
     
-    def set_details(self, automatic=False, starton=[], stopon=[], backend=None):
+    def set_details(self, job):
+        """
+        Change the content of the "Details" expander to info about
+        the set service.
+        """
         txt = []
-        if automatic:
-            txt.append("Automatically started")
+        starton = []
+        stopon = []
+        bk_names = {
+            'sysv': 'System V',
+            'upstart_0_6': 'Upstart (0.6)',
+            'upstart_0_10': 'Upstart (0.10)',
+        }
+        if job.backend in bk_names:
+            txt.append("Type: %s" % bk_names[job.backend])
+        if job.backend == 'sysv':
+            if job.starton:
+                starton.append("on runlevels %s" % ", ".join(job.starton))
+            if job.stopon:
+                stopon.append("on runlevels %s" % ", ".join(job.stopon))
         else:
-            txt.append("Manual mode")
-        if starton: txt.append("Starts:\n\t%s" % '\n\t'.join(starton))
-        if stopon: txt.append("Stops:\n\t%s" % '\t'.join(stopon))
-        if backend: txt.append("Type: %s" % backend)
-        self.lbl_details.props.label = '\n\n'.join(txt)
+            if job.automatic:
+                txt.append("Automatically started")
+            else:
+                txt.append("Manual mode")
+        if starton: txt.append("Starts:\n\t%s" % "\n\t".join(starton))
+        if stopon: txt.append("Stops:\n\t%s" % "\t".join(stopon))
+        self.lbl_details.props.label = "\n\n".join(txt)
