@@ -9,6 +9,7 @@ class JobsAdminUI:
     def __init__(self):
         self.jobservice = RemoteJobService()
         self.active_job = None
+        self.active_index = 0
         self.builder = gtk.Builder()
         self.builder.add_from_file('jobs-admin.ui')
         
@@ -38,16 +39,16 @@ class JobsAdminUI:
         self.btn_job_toggle.connect('clicked', self.job_toggle)
     
     def load_jobs(self):
+        self.lst_jobs.clear()
         for jobname, job in self.jobservice.get_all_jobs().iteritems():
             self.lst_jobs.append((jobname, 700 if job.running else 400))
         self.lst_jobs.set_sort_column_id(0, gtk.SORT_ASCENDING)
         # put the cursor on something to trigger show_job_details
-        self.tv_jobs.set_cursor(0)
+        self.tv_jobs.set_cursor(self.active_index)
     
     def show_job_info(self, treeview):
         model, treeiter = self.tv_jobs_sel.get_selected()
-        # we must have a selection at this point
-        assert treeiter
+        self.active_index = self.tv_jobs_sel.get_selected_rows()[1][0][0]
         jobname = self.lst_jobs.get_value(treeiter, 0)
         self.active_job = self.jobservice.jobs[jobname]
         # update some ui elements
@@ -65,6 +66,7 @@ class JobsAdminUI:
         def reply():
             self.set_running(self.active_job.running)
             self.set_waiting(False)
+            self.load_jobs()
         def error(e):
             self.set_waiting(False)
         if self.active_job.running:
