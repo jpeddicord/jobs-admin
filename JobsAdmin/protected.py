@@ -1,5 +1,6 @@
 
 
+# these services should not be managed by us
 protected_jobs = [
     'acpid',
     'acpi-support',

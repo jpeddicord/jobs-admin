@@ -31,13 +31,10 @@ class RemoteJob:
         self.obj = self.bus.get_object('com.ubuntu.JobService', path)
         self.interface = Interface(self.obj, 'com.ubuntu.JobService.Job')
     
-    def __repr__(self):
-        return "<RemoteJob %s>" % self.name
-    
     def __getattr__(self, name):
         if not self.props:
             self.props = self.obj.GetAll('com.ubuntu.JobService.Job',
-                                         dbus_interface=PROPERTIES_IFACE)
+                    dbus_interface=PROPERTIES_IFACE)
         return self.props[name]
     
     def start(self, reply_handler=None, error_handler=None):

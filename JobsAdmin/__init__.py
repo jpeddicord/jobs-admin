@@ -122,11 +122,15 @@ class JobsAdminUI:
                 starton.append("on runlevels %s" % ", ".join(job.starton))
             if job.stopon:
                 stopon.append("on runlevels %s" % ", ".join(job.stopon))
-        else:
+        elif job.backend == 'upstart_0_6':
             if job.automatic:
                 txt.append("Automatically started")
             else:
                 txt.append("Manual mode")
+            if job.starton:
+                starton += job.starton
+            if job.stopon:
+                stopon += job.stopon
         if starton: txt.append("Starts:\n\t%s" % "\n\t".join(starton))
         if stopon: txt.append("Stops:\n\t%s" % "\t".join(stopon))
         self.lbl_details.props.label = "\n\n".join(txt)
