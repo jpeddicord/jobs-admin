@@ -69,6 +69,9 @@ class JobsAdminUI:
             self.load_jobs()
         def error(e):
             self.set_waiting(False)
+            # ignore deniedbypolicy errors
+            if not 'DeniedByPolicy' in e._dbus_error_name:
+                raise e
         if self.active_job.running:
             self.active_job.stop(reply_handler=reply, error_handler=error)
         else:
