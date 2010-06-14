@@ -52,7 +52,7 @@ class JobsAdminUI:
         jobname = self.lst_jobs.get_value(treeiter, 0)
         self.active_job = self.jobservice.jobs[jobname]
         # update some ui elements
-        self.lbl_jobdesc.props.label = "<b>%s</b> - <i>%s</i>" % (
+        self.lbl_jobdesc.props.label = "<b>{0}</b> - <i>{1}</i>".format(
                 jobname, self.active_job.description)
         self.set_running(self.active_job.running)
         self.set_details(self.active_job)
@@ -116,12 +116,14 @@ class JobsAdminUI:
             'upstart_0_10': 'Upstart (0.10)',
         }
         if job.backend in bk_names:
-            txt.append("Type: %s" % bk_names[job.backend])
+            txt.append("Type: {backend}".format(backend=bk_names[job.backend]))
         if job.backend == 'sysv':
             if job.starton:
-                starton.append("on runlevels %s" % ", ".join(job.starton))
+                starton.append("on runlevels {list}".format(
+                        list=", ".join(job.starton)))
             if job.stopon:
-                stopon.append("on runlevels %s" % ", ".join(job.stopon))
+                stopon.append("on runlevels {list}".format(
+                        list=", ".join(job.stopon)))
         elif job.backend == 'upstart_0_6':
             if job.automatic:
                 txt.append("Automatically started")
@@ -133,10 +135,10 @@ class JobsAdminUI:
                 else:
                     action, jobname = item.split()
                     if jobname in self.jobservice.jobs:
-                        jobname = "<a href='%s'>%s</a>" % (jobname, jobname)
-                    starton.append("on %s %s" % (action, jobname))
+                        jobname = "<a href='{0}'>{0}</a>".format(jobname)
+                    starton.append("on {0} {1}".format(action, jobname))
             if job.stopon:
                 stopon += job.stopon
-        if starton: txt.append("Starts:\n\t%s" % "\n\t".join(starton))
-        if stopon: txt.append("Stops:\n\t%s" % "\t".join(stopon))
+        if starton: txt.append("Starts:\n\t{0}".format("\n\t".join(starton)))
+        if stopon: txt.append("Stops:\n\t{0}".format("\t".join(stopon)))
         self.lbl_details.props.label = "\n\n".join(txt)
