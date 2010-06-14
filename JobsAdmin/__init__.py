@@ -37,6 +37,7 @@ class JobsAdminUI:
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
         
         self.btn_job_toggle.connect('clicked', self.job_toggle)
+        self.lbl_details.connect('activate-link', self.link_clicked)
     
     def load_jobs(self):
         self.lst_jobs.clear()
@@ -129,16 +130,27 @@ class JobsAdminUI:
                 txt.append("Automatically started")
             else:
                 txt.append("Manual mode")
-            for item in job.starton:
-                if 'runlevel' in item:
-                    starton.append(item)
-                else:
-                    action, jobname = item.split()
-                    if jobname in self.jobservice.jobs:
-                        jobname = "<a href='{0}'>{0}</a>".format(jobname)
-                    starton.append("on {0} {1}".format(action, jobname))
-            if job.stopon:
-                stopon += job.stopon
+            for mode, field in ((job.starton, starton), (job.stopon, stopon)):
+                for item in mode:
+                    if 'runlevel' in item:
+                        field.append(item)
+                    else:
+                        action, jobname = item.split()
+                        if jobname in self.jobservice.jobs:
+                            jobname = "<a href='{0}'>{0}</a>".format(jobname)
+                        field.append("on {0} {1}".format(action, jobname))
         if starton: txt.append("Starts:\n\t{0}".format("\n\t".join(starton)))
         if stopon: txt.append("Stops:\n\t{0}".format("\t".join(stopon)))
         self.lbl_details.props.label = "\n\n".join(txt)
+    
+    def link_clicked(self, label, uri):
+        """
+        Action for a link clicked in lbl_details (select a job).
+        """
+        self.active_index = 0
+        for name, status in self.lst_jobs:
+            if uri == name:
+                break
+            self.active_index += 1
+        self.tv_jobs.set_cursor(self.active_index)
+        return True
