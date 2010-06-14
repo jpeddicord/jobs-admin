@@ -127,8 +127,14 @@ class JobsAdminUI:
                 txt.append("Automatically started")
             else:
                 txt.append("Manual mode")
-            if job.starton:
-                starton += job.starton
+            for item in job.starton:
+                if 'runlevel' in item:
+                    starton.append(item)
+                else:
+                    action, jobname = item.split()
+                    if jobname in self.jobservice.jobs:
+                        jobname = "<a href='%s'>%s</a>" % (jobname, jobname)
+                    starton.append("on %s %s" % (action, jobname))
             if job.stopon:
                 stopon += job.stopon
         if starton: txt.append("Starts:\n\t%s" % "\n\t".join(starton))

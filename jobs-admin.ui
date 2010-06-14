@@ -11,6 +11,7 @@
     </columns>
   </object>
   <object class="GtkWindow" id="win_main">
+    <property name="border_width">5</property>
     <property name="title" translatable="yes">System Job Administration</property>
     <property name="default_width">400</property>
     <property name="default_height">300</property>
@@ -22,7 +23,7 @@
           <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
             <property name="border_width">6</property>
-            <property name="spacing">5</property>
+            <property name="spacing">10</property>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow1">
                 <property name="visible">True</property>
