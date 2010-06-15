@@ -69,10 +69,16 @@ class JobsAdminUI:
             self.set_waiting(False)
             self.load_jobs()
         def error(e):
-            self.set_waiting(False)
             # ignore deniedbypolicy errors
             if not 'DeniedByPolicy' in e._dbus_error_name:
-                raise e
+                error = "A problem has occurred:\n\n\t{0}\n\n".format(
+                                e.get_dbus_message()) + \
+                        "Try changing the job settings and try again."
+                dlg = gtk.MessageDialog(self.win_main, gtk.DIALOG_MODAL,
+                        gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, error)
+                dlg.run()
+                dlg.destroy()
+            self.set_waiting(False)
         if self.active_job.running:
             self.active_job.stop(reply_handler=reply, error_handler=error)
         else:
@@ -88,6 +94,10 @@ class JobsAdminUI:
             obj.props.sensitive = False if waiting else True
     
     def set_running(self, running):
+        """
+        Changes the UI running state (doesn't call on JobService, see
+        self.job_toggle for that.
+        """
         if running:
             self.img_status.set_from_stock(gtk.STOCK_MEDIA_PLAY,
                                            gtk.ICON_SIZE_BUTTON)
