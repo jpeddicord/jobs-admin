@@ -1,0 +1,3 @@
+version=3
+https://launchpad.net/jobsadmin/+download http://launchpad.net/jobsadmin/.*/jobsadmin-(.+)\.tar\.gz
+
