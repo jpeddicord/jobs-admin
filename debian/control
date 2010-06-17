@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7), cdbs (>= 0.4.49), python (>= 2.6), python-suppo
 Standards-Version: 3.8.4
 Homepage: https://launchpad.net/jobs-admin
 
-Package: jobservice
+Package: jobs-admin
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-gtk2, jobservice
 Description: system job management
