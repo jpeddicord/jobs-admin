@@ -11,7 +11,10 @@ class JobsAdminUI:
         self.active_job = None
         self.active_index = 0
         self.builder = gtk.Builder()
-        self.builder.add_from_file('jobs-admin.ui')
+        try:
+            self.builder.add_from_file('jobs-admin.ui')
+        except:
+            self.builder.add_from_file('/usr/share/jobs-admin/jobs-admin.ui')
         
         objects = [
             'win_main',

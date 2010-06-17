@@ -14,6 +14,7 @@ setup_info = dict(
     scripts=['jobs-admin'],
     data_files=[
         ('share/applications', ['jobs-admin.desktop']),
+        ('share/jobs-admin', ['jobs-admin.ui']),
     ]
 )
 
