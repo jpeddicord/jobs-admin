@@ -2,6 +2,7 @@
 
 from distutils.core import setup
 
+
 setup_info = dict(
     name='jobs-admin',
     version='0.1',
@@ -11,6 +12,9 @@ setup_info = dict(
     url='https://launchpad.net/jobsadmin',
     packages=['JobsAdmin'],
     scripts=['jobs-admin'],
+    data_files=[
+        ('share/applications', ['jobs-admin.desktop']),
+    ]
 )
 
 setup(**setup_info)

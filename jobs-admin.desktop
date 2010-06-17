@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=System Jobs
+Comment=Manage system jobs present on your computer
+Icon=system-run
+Type=Application
+Terminal=false
+Exec=jobs-admin
+StartupNotify=true
+Categories=System;Settings;GTK;
