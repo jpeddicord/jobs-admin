@@ -125,13 +125,13 @@ class JobsAdminUI:
         starton = []
         stopon = []
         bk_names = {
-            'sysv': 'System V',
+            'sysv_stb': 'System V',
             'upstart_0_6': 'Upstart (0.6)',
             'upstart_0_10': 'Upstart (0.10)',
         }
         if job.backend in bk_names:
             txt.append("Type: {backend}".format(backend=bk_names[job.backend]))
-        if job.backend == 'sysv':
+        if job.backend == 'sysv_stb':
             if job.starton:
                 starton.append("on runlevels {list}".format(
                         list=", ".join(job.starton)))
