@@ -2,6 +2,7 @@
 import gtk
 from gobject import idle_add
 from JobsAdmin.remote import RemoteJobService
+from JobsAdmin.settings import SettingsDialog
 
 
 class JobsAdminUI:
@@ -41,6 +42,7 @@ class JobsAdminUI:
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
         
         self.btn_job_toggle.connect('clicked', self.job_toggle)
+        self.btn_job_settings.connect('clicked', self.show_settings)
         self.lbl_details.connect('activate-link', self.link_clicked)
     
     def load_jobs(self):
@@ -89,6 +91,14 @@ class JobsAdminUI:
             self.active_job.stop(reply_handler=reply, error_handler=error)
         else:
             self.active_job.start(reply_handler=reply, error_handler=error)
+    
+    def show_settings(self, button):
+        """
+        Show the settings dialog for this job.
+        """
+        dlg = SettingsDialog(self.active_job, self.win_main)
+        dlg.run()
+        dlg.destroy()
         
     def set_waiting(self, waiting=True):
         """
@@ -97,7 +107,7 @@ class JobsAdminUI:
         cursor = gtk.gdk.Cursor(gtk.gdk.WATCH if waiting else gtk.gdk.ARROW)
         self.win_main.get_window().set_cursor(cursor)
         for obj in self.win_main.get_children():
-            obj.props.sensitive = False if waiting else True
+            obj.props.sensitive = not waiting
     
     def set_running(self, running):
         """

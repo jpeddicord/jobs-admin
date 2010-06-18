@@ -48,3 +48,7 @@ class RemoteJob:
                 reply_handler=reply_handler, error_handler=error_handler)
         self.props = {}
     
+    def get_settings(self):
+        return self.interface.GetSettings()
+        
+    
