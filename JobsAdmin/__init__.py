@@ -26,6 +26,7 @@ class JobsAdminUI:
             'img_job_toggle',
             'lbl_details',
             'btn_job_toggle',
+            'btn_job_settings',
             'btn_help',
             'btn_close',
             'lst_jobs',
@@ -59,6 +60,7 @@ class JobsAdminUI:
         self.lbl_jobdesc.props.label = "<b>{0}</b> - <i>{1}</i>".format(
                 jobname, self.active_job.description)
         self.set_running(self.active_job.running)
+        self.btn_job_settings.props.sensitive = self.active_job.settings
         self.set_details(self.active_job)
 
     def job_toggle(self, button):
@@ -74,9 +76,10 @@ class JobsAdminUI:
         def error(e):
             # ignore deniedbypolicy errors
             if not 'DeniedByPolicy' in e._dbus_error_name:
-                error = "A problem has occurred:\n\n\t{0}\n\n".format(
-                                e.get_dbus_message()) + \
-                        "Try changing the job settings and try again."
+                error = "A problem has occurred:\n\n\t{0}".format(
+                                e.get_dbus_message())
+                if self.active_job.settings:
+                    error += "\n\nTry changing the job settings and try again."
                 dlg = gtk.MessageDialog(self.win_main, gtk.DIALOG_MODAL,
                         gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, error)
                 dlg.run()
@@ -99,7 +102,7 @@ class JobsAdminUI:
     def set_running(self, running):
         """
         Changes the UI running state (doesn't call on JobService, see
-        self.job_toggle for that.
+        self.job_toggle for that).
         """
         if running:
             self.img_status.set_from_stock(gtk.STOCK_MEDIA_PLAY,
