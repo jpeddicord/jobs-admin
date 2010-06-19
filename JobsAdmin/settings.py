@@ -19,28 +19,39 @@ class SettingsDialog(gtk.Dialog):
         
         # add the settings fields
         for name, details in settings.iteritems():
+            # display varies by type
             if details[0] == 'bool':
                 widget = gtk.CheckButton(details[1])
+                widget.props.active = (details[2] == 'true')
+            
             elif details[0] == 'int':
-                widget = gtk.HBox()
-                lbl = gtk.Label("{0}:".format(details[1]))
-                widget.pack_start(lbl)
-                sb = gtk.SpinButton()
-                widget.pack_start(sb)
+                widget = gtk.SpinButton()
+                widget.props.value = details[2]
+            
             elif details[0] == 'float':
                 widget = gtk.SpinButton()
+                widget.props.value = details[2]
+            
             elif details[0] == 'str':
-                widget = gtk.ComboBoxEntry()
+                widget = gtk.Entry()
+                widget.props.text = details[2]
+            
             elif details[0] == 'choice':
-                lst = gtk.ListStore(str)
+                lst = gtk.ListStore(str, str)
                 widget = gtk.ComboBox(lst)
                 cell = gtk.CellRendererText()
                 widget.pack_start(cell)
-                widget.add_attribute(cell, 'text', 0)
+                widget.add_attribute(cell, 'text', 1)
+                index = 0
                 for vname, vdesc in details[3]:
-                    lst.append((vdesc,))
+                    lst.append((vname, vdesc))
+                    if vname == details[2]:
+                        widget.props.active = index
+                    index += 1
+            
             elif details[0] == 'file':
                 widget = gtk.FileChooserButton("Choose a file")
+            
             elif details[0] == 'dir':
                 widget = gtk.FileChooserButton("Choose a folder")
             
