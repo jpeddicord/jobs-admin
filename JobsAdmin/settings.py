@@ -10,11 +10,15 @@ class SettingsDialog(gtk.Dialog):
             gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
         ))
         self.job = job
-        self.vbox.props.spacing = 5
-        self.props.border_width = 5
+        settings = self.job.get_settings()
+        self.table = gtk.Table(len(settings), 2)
+        self.table.props.row_spacing = 5
+        self.table.props.column_spacing = 10
+        self.table.props.border_width = 5
+        row = 0
         
         # add the settings fields
-        for name, details in self.job.get_settings().iteritems():
+        for name, details in settings.iteritems():
             if details[0] == 'bool':
                 widget = gtk.CheckButton(details[1])
             elif details[0] == 'int':
@@ -26,7 +30,7 @@ class SettingsDialog(gtk.Dialog):
             elif details[0] == 'float':
                 widget = gtk.SpinButton()
             elif details[0] == 'str':
-                widget = gtk.Entry()
+                widget = gtk.ComboBoxEntry()
             elif details[0] == 'choice':
                 lst = gtk.ListStore(str)
                 widget = gtk.ComboBox(lst)
@@ -42,18 +46,17 @@ class SettingsDialog(gtk.Dialog):
             
             # checkboxes already have labels
             if details[0] == 'bool':
-                widget.show()
-                self.vbox.pack_start(widget, False)
+                self.table.attach(widget, 0, 2, row, row + 1)
             # but the others don't; let's add them
             else:
-                hbox = gtk.HBox()
-                hbox.props.spacing = 10
                 lbl = gtk.Label("{0}:".format(details[1]))
                 lbl.props.xalign = 0
-                hbox.pack_start(lbl)
-                hbox.pack_start(widget)
-                hbox.show_all()
-                self.vbox.pack_start(hbox, False)
+                self.table.attach(lbl, 0, 1, row, row + 1)
+                self.table.attach(widget, 1, 2, row, row + 1)
+            row += 1
+        
+        self.vbox.pack_start(self.table)
+        self.vbox.show_all()
             
     def apply_settings(self):
         pass
