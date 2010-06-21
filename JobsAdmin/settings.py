@@ -9,16 +9,20 @@ class SettingsDialog(gtk.Dialog):
             gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
             gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
         ))
+        # dialog actions
+        self.connect('response', self.apply_settings)
         self.job = job
-        settings = self.job.get_settings()
-        self.table = gtk.Table(len(settings), 2)
+        self.settings = self.job.get_settings()
+        self.widgets = {}
+        # use a table layout
+        self.table = gtk.Table(len(self.settings), 2)
         self.table.props.row_spacing = 5
         self.table.props.column_spacing = 10
         self.table.props.border_width = 5
-        row = 0
         
+        row = 0
         # add the settings fields
-        for name, details in settings.iteritems():
+        for name, details in self.settings.iteritems():
             # display varies by type
             if details[0] == 'bool':
                 widget = gtk.CheckButton(details[1])
@@ -64,10 +68,31 @@ class SettingsDialog(gtk.Dialog):
                 lbl.props.xalign = 0
                 self.table.attach(lbl, 0, 1, row, row + 1)
                 self.table.attach(widget, 1, 2, row, row + 1)
+            
             row += 1
+            self.widgets[name] = widget
         
         self.vbox.pack_start(self.table)
         self.vbox.show_all()
             
-    def apply_settings(self):
-        pass
+    def apply_settings(self, dialog, response):
+        if response != gtk.RESPONSE_ACCEPT:
+            return
+        newsettings = {}
+        for name, details in self.settings.iteritems():
+            widget = self.widgets[name]
+            # grab the value based on type
+            if details[0] == 'bool':
+                value = 'true' if widget.props.active else 'false'
+            elif details[0] == 'int' or details[0] == 'float':
+                value = widget.props.value
+            elif details[0] == 'str':
+                value = widget.props.text
+            elif details[0] == 'choice':
+                value = widget.get_model()[widget.props.active][0]
+            elif details[0] == 'file' or details[0] == 'dir':
+                value = "unknown" #TODO
+            # only send it if changed
+            if value != details[2]:
+                newsettings[name] = value
+        self.job.set_settings(newsettings)

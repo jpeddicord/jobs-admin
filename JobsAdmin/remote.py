@@ -51,4 +51,5 @@ class RemoteJob:
     def get_settings(self):
         return self.interface.GetSettings()
         
-    
+    def set_settings(self, settings):
+        self.interface.SetSettings(settings)
