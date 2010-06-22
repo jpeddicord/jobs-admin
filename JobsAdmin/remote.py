@@ -62,11 +62,13 @@ class RemoteJob:
         retry(self._connect, call)
         self.props = {}
     
-    def get_settings(self):
-        def call(): return self.interface.GetSettings()
+    def get_settings(self, reply_handler=None, error_handler=None):
+        def call(): return self.interface.GetSettings(
+                reply_handler=reply_handler, error_handler=error_handler)
         return retry(self._connect, call)
         
-    def set_settings(self, settings):
-        def call(): self.interface.SetSettings(settings)
+    def set_settings(self, settings, reply_handler=None, error_handler=None):
+        def call(): self.interface.SetSettings(settings,
+                reply_handler=reply_handler, error_handler=error_handler)
         retry(self._connect, call)
         

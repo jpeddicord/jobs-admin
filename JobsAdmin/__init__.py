@@ -97,14 +97,17 @@ class JobsAdminUI:
         """
         Show the settings dialog for this job.
         """
-        try:
-            dlg = SettingsDialog(self.active_job, self.win_main)
-        except DBusException, e:
-            if not 'DeniedByPolicy' in e._dbus_error_name:
-                raise
-        else:
+        self.set_waiting()
+        def reply(settings):
+            self.set_waiting(False)
+            dlg = SettingsDialog(self.active_job, settings, self.win_main)
             dlg.run()
             dlg.destroy()
+        def error(e):
+            self.set_waiting(False)
+            if not 'DeniedByPolicy' in e._dbus_error_name:
+                raise e
+        self.active_job.get_settings(reply_handler=reply, error_handler=error)
         
     def set_waiting(self, waiting=True):
         """

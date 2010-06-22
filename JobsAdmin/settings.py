@@ -4,7 +4,7 @@ import gtk
 
 class SettingsDialog(gtk.Dialog):
     
-    def __init__(self, job, parent=None):
+    def __init__(self, job, settings, parent=None):
         gtk.Dialog.__init__(self, "Job Settings", parent, gtk.DIALOG_MODAL, (
             gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
             gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
@@ -12,7 +12,7 @@ class SettingsDialog(gtk.Dialog):
         # dialog actions
         self.connect('response', self.apply_settings)
         self.job = job
-        self.settings = self.job.get_settings()
+        self.settings = settings
         self.widgets = {}
         # use a table layout
         self.table = gtk.Table(len(self.settings), 2)
