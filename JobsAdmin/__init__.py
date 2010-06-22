@@ -1,6 +1,7 @@
 
 import gtk
 from gobject import idle_add
+from dbus.exceptions import DBusException
 from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.settings import SettingsDialog
 
@@ -96,9 +97,14 @@ class JobsAdminUI:
         """
         Show the settings dialog for this job.
         """
-        dlg = SettingsDialog(self.active_job, self.win_main)
-        dlg.run()
-        dlg.destroy()
+        try:
+            dlg = SettingsDialog(self.active_job, self.win_main)
+        except DBusException, e:
+            if not 'DeniedByPolicy' in e._dbus_error_name:
+                raise
+        else:
+            dlg.run()
+            dlg.destroy()
         
     def set_waiting(self, waiting=True):
         """
