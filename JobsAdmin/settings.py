@@ -29,12 +29,12 @@ class SettingsDialog(gtk.Dialog):
                 widget.props.active = (details[2] == 'true')
             
             elif details[0] == 'int':
-                widget = gtk.SpinButton()
-                widget.props.value = details[2]
+                adj = gtk.Adjustment(int(details[2]), 0, 65535, 1)
+                widget = gtk.SpinButton(adj)
             
             elif details[0] == 'float':
-                widget = gtk.SpinButton()
-                widget.props.value = details[2]
+                adj = gtk.Adjustment(float(details[2]), 0, 65535, 1)
+                widget = gtk.SpinButton(adj)
             
             elif details[0] == 'str':
                 widget = gtk.Entry()
@@ -84,8 +84,10 @@ class SettingsDialog(gtk.Dialog):
             # grab the value based on type
             if details[0] == 'bool':
                 value = 'true' if widget.props.active else 'false'
-            elif details[0] == 'int' or details[0] == 'float':
-                value = widget.props.value
+            elif details[0] == 'int':
+                value = str(int(widget.props.value))
+            elif details[0] == 'float':
+                value = str(widget.props.value)
             elif details[0] == 'str':
                 value = widget.props.text
             elif details[0] == 'choice':
