@@ -29,12 +29,18 @@ class SettingsDialog(gtk.Dialog):
                 widget.props.active = (details[2] == 'true')
             
             elif details[0] == 'int':
-                adj = gtk.Adjustment(int(details[2]), 0, 65535, 1)
+                imin = details[4]['min'] if 'min' in details[4] else -65535
+                imax = details[4]['max'] if 'max' in details[4] else 65535
+                adj = gtk.Adjustment(int(details[2]),
+                        float(imin), float(imax), 1)
                 widget = gtk.SpinButton(adj)
             
             elif details[0] == 'float':
-                adj = gtk.Adjustment(float(details[2]), 0, 65535, 1)
-                widget = gtk.SpinButton(adj)
+                imin = details[4]['min'] if 'min' in details[4] else -65535
+                imax = details[4]['max'] if 'max' in details[4] else 65535
+                adj = gtk.Adjustment(float(details[2]),
+                        float(imin), float(imax), 0.1)
+                widget = gtk.SpinButton(adj, digits=1)
             
             elif details[0] == 'str':
                 widget = gtk.Entry()
