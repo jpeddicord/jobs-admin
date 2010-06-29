@@ -5,6 +5,12 @@ from dbus.exceptions import DBusException
 from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.settings import SettingsDialog
 
+BACKEND_NAMES = {
+    'sysv_stb': 'System V',
+    'upstart_0_6': 'Upstart (0.6)',
+    'upstart_0_10': 'Upstart (0.10)',
+}
+
 
 class JobsAdminUI:
 
@@ -24,6 +30,9 @@ class JobsAdminUI:
             'btn_job_toggle',
             'img_job_toggle',
             'btn_job_settings',
+            'lbl_job_type',
+            'lbl_job_starts',
+            'lbl_job_stops',
             'img_running',
             'lst_jobs',
         ]
@@ -37,6 +46,8 @@ class JobsAdminUI:
         
         self.btn_job_toggle.connect('clicked', self.job_toggle)
         self.btn_job_settings.connect('clicked', self.show_settings)
+        self.lbl_job_starts.connect('activate-link', self.link_clicked)
+        self.lbl_job_stops.connect('activate-link', self.link_clicked)
         
         self.icon_theme = gtk.icon_theme_get_default()
         name, size = self.img_running.get_icon_name()
@@ -56,14 +67,51 @@ class JobsAdminUI:
         self.tv_jobs.set_cursor(self.active_index)
     
     def show_job_info(self, treeview):
+        """
+        Updates the UI with the currently selected job's info.
+        """
         model, treeiter = self.tv_jobs_sel.get_selected()
         self.active_index = self.tv_jobs_sel.get_selected_rows()[1][0][0]
         jobname = self.lst_jobs.get_value(treeiter, 0)
-        self.active_job = self.jobservice.jobs[jobname]
-        # update some ui elements
-        self.set_running(self.active_job.running)
-        self.btn_job_settings.props.sensitive = self.active_job.settings
-        self.set_details(self.active_job)
+        self.active_job = job = self.jobservice.jobs[jobname]
+        # change the start/stop button
+        if job.running:
+            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
+                                               gtk.ICON_SIZE_BUTTON)
+            self.btn_job_toggle.props.label = "_Stop"
+        else:
+            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_PLAY,
+                                               gtk.ICON_SIZE_BUTTON)
+            self.btn_job_toggle.props.label = "_Start"
+        # enable/disable job settings
+        self.btn_job_settings.props.sensitive = job.settings
+        # backend type
+        self.lbl_job_type.props.label = BACKEND_NAMES[job.backend] \
+                if job.backend in BACKEND_NAMES else "Unknown"
+        # starton/stopon vary slightly by backend
+        starton = []
+        stopon = []
+        if job.backend == 'sysv_stb':
+            if job.starton:
+                starton.append("on runlevels {list}".format(
+                        list=", ".join(job.starton)))
+            if job.stopon:
+                stopon.append("on runlevels {list}".format(
+                        list=", ".join(job.stopon)))
+        elif job.backend == 'upstart_0_6':
+            for mode, field in ((job.starton, starton), (job.stopon, stopon)):
+                for item in mode:
+                    if 'runlevel' in item:
+                        field.append(item)
+                    else:
+                        action, jobname = item.split()
+                        if jobname in self.jobservice.jobs:
+                            jobname = "<a href='{0}'>{0}</a>".format(jobname)
+                        field.append("on {0} {1}".format(action, jobname))
+        self.lbl_job_starts.props.label = "Unknown"
+        self.lbl_job_stops.props.label = "Unknown"
+        if starton: self.lbl_job_starts.props.label = ", ".join(starton)
+        if stopon: self.lbl_job_stops.props.label = ", ".join(stopon)
 
     def job_toggle(self, button):
         """
@@ -72,9 +120,9 @@ class JobsAdminUI:
         self.set_waiting()
         # async callbacks so we don't appear to freeze
         def reply():
-            self.set_running(self.active_job.running)
             self.set_waiting(False)
             self.load_jobs()
+            # TODO: call show_job_info? gtk may take care of this
         def error(e):
             # ignore deniedbypolicy errors
             if not 'DeniedByPolicy' in e._dbus_error_name:
@@ -117,68 +165,13 @@ class JobsAdminUI:
         for obj in self.win_main.get_children():
             obj.props.sensitive = not waiting
     
-    def set_running(self, running):
-        """
-        Changes the UI running state (doesn't call on JobService, see
-        self.job_toggle for that).
-        """
-        if running:
-            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
-                                               gtk.ICON_SIZE_BUTTON)
-            self.btn_job_toggle.props.label = "_Stop"
-        else:
-            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_PLAY,
-                                               gtk.ICON_SIZE_BUTTON)
-            self.btn_job_toggle.props.label = "_Start"
-    
-    def set_details(self, job):
-        """
-        Change the content of the "Details" expander to info about
-        the set service.
-        """
-        return #FIXME
-        txt = []
-        starton = []
-        stopon = []
-        bk_names = {
-            'sysv_stb': 'System V',
-            'upstart_0_6': 'Upstart (0.6)',
-            'upstart_0_10': 'Upstart (0.10)',
-        }
-        if job.backend in bk_names:
-            txt.append("Type: {backend}".format(backend=bk_names[job.backend]))
-        if job.backend == 'sysv_stb':
-            if job.starton:
-                starton.append("on runlevels {list}".format(
-                        list=", ".join(job.starton)))
-            if job.stopon:
-                stopon.append("on runlevels {list}".format(
-                        list=", ".join(job.stopon)))
-        elif job.backend == 'upstart_0_6':
-            if job.automatic:
-                txt.append("Automatically started")
-            else:
-                txt.append("Manual mode")
-            for mode, field in ((job.starton, starton), (job.stopon, stopon)):
-                for item in mode:
-                    if 'runlevel' in item:
-                        field.append(item)
-                    else:
-                        action, jobname = item.split()
-                        if jobname in self.jobservice.jobs:
-                            jobname = "<a href='{0}'>{0}</a>".format(jobname)
-                        field.append("on {0} {1}".format(action, jobname))
-        if starton: txt.append("Starts:\n\t{0}".format("\n\t".join(starton)))
-        if stopon: txt.append("Stops:\n\t{0}".format("\t".join(stopon)))
-        self.lbl_details.props.label = "\n\n".join(txt)
-    
     def link_clicked(self, label, uri):
         """
-        Action for a link clicked in lbl_details (select a job).
+        Action for any link clicked to change to that job.
         """
         self.active_index = 0
-        for name, status in self.lst_jobs:
-            if uri == name:
+        for job in self.lst_jobs:
+            if uri == job[0]:
                 break
             self.active_index += 1
         self.tv_jobs.set_cursor(self.active_index)
