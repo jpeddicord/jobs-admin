@@ -21,37 +21,36 @@ class JobsAdminUI:
         objects = [
             'win_main',
             'tv_jobs',
-            #'lbl_jobdesc',
-            #'img_status',
-            #'lbl_status',
             'btn_job_toggle',
             'img_job_toggle',
-            'lbl_details',
-            'btn_job_toggle',
             'btn_job_settings',
-            'btn_help',
-            'btn_close',
+            'img_running',
             'lst_jobs',
         ]
         for obj in objects:
             self.__dict__[obj] = self.builder.get_object(obj)
         
         self.win_main.connect('destroy', gtk.main_quit)
-        #self.btn_close.connect('clicked', gtk.main_quit)
         
         self.tv_jobs_sel = self.tv_jobs.get_selection()
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
         
         self.btn_job_toggle.connect('clicked', self.job_toggle)
         self.btn_job_settings.connect('clicked', self.show_settings)
-        self.lbl_details.connect('activate-link', self.link_clicked)
+        
+        self.icon_theme = gtk.icon_theme_get_default()
+        name, size = self.img_running.get_icon_name()
+        self.pb_running = self.icon_theme.load_icon(name, 16, 0)
     
     def load_jobs(self):
         self.lst_jobs.clear()
         for jobname, job in self.jobservice.get_all_jobs().iteritems():
             markup = "<b>{0}</b> - <i>{1}</i>".format(jobname, job.description)
-            running = "Running" if job.running else ""
-            self.lst_jobs.append((jobname, running, markup))
+            mode = "Auto" if job.automatic else "Manual"
+            running_img = self.pb_running if job.running else None
+            service_weight = 700 if job.running else 400
+            self.lst_jobs.append((jobname, job.description, job.running,
+                    mode, running_img, service_weight))
         self.lst_jobs.set_sort_column_id(0, gtk.SORT_ASCENDING)
         # put the cursor on something to trigger show_job_details
         self.tv_jobs.set_cursor(self.active_index)
@@ -62,8 +61,6 @@ class JobsAdminUI:
         jobname = self.lst_jobs.get_value(treeiter, 0)
         self.active_job = self.jobservice.jobs[jobname]
         # update some ui elements
-        #self.lbl_jobdesc.props.label = "<b>{0}</b> - <i>{1}</i>".format(
-        #        jobname, self.active_job.description)
         self.set_running(self.active_job.running)
         self.btn_job_settings.props.sensitive = self.active_job.settings
         self.set_details(self.active_job)
@@ -126,18 +123,12 @@ class JobsAdminUI:
         self.job_toggle for that).
         """
         if running:
-            #self.img_status.set_from_stock(gtk.STOCK_MEDIA_PLAY,
-            #                               gtk.ICON_SIZE_BUTTON)
-            #self.lbl_status.props.label = "Running"
-            #self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
-            #                                   gtk.ICON_SIZE_BUTTON)
+            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
+                                               gtk.ICON_SIZE_BUTTON)
             self.btn_job_toggle.props.label = "_Stop"
         else:
-            #self.img_status.set_from_stock(gtk.STOCK_MEDIA_STOP,
-            #                               gtk.ICON_SIZE_BUTTON)
-            #self.lbl_status.props.label = "Not running"
-            #self.img_job_toggle.set_from_stock(gtk.STOCK_EXECUTE,
-            #                                   gtk.ICON_SIZE_BUTTON)
+            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_PLAY,
+                                               gtk.ICON_SIZE_BUTTON)
             self.btn_job_toggle.props.label = "_Start"
     
     def set_details(self, job):
@@ -145,6 +136,7 @@ class JobsAdminUI:
         Change the content of the "Details" expander to info about
         the set service.
         """
+        return #FIXME
         txt = []
         starton = []
         stopon = []

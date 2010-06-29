@@ -2,9 +2,25 @@
 <interface>
   <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkListStore" id="lst_jobs">
+    <columns>
+      <!-- column-name service -->
+      <column type="gchararray"/>
+      <!-- column-name description -->
+      <column type="gchararray"/>
+      <!-- column-name running -->
+      <column type="gboolean"/>
+      <!-- column-name mode -->
+      <column type="gchararray"/>
+      <!-- column-name running_img -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name service_weight -->
+      <column type="gint"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="win_main">
     <property name="title" translatable="yes">System Job Administration</property>
-    <property name="default_width">500</property>
+    <property name="default_width">600</property>
     <property name="default_height">400</property>
     <property name="icon_name">system-run</property>
     <child>
@@ -102,7 +118,7 @@
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">never</property>
+            <property name="hscrollbar_policy">automatic</property>
             <property name="vscrollbar_policy">automatic</property>
             <property name="shadow_type">in</property>
             <child>
@@ -116,7 +132,41 @@
                 <property name="show_expanders">False</property>
                 <child>
                   <object class="GtkTreeViewColumn" id="treeviewcolumn3">
+                    <property name="spacing">5</property>
                     <property name="clickable">True</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort_column_id">2</property>
+                    <child>
+                      <object class="GtkCellRendererPixbuf" id="cellrendererpixbuf1">
+                        <property name="xpad">5</property>
+                        <property name="stock_size">16</property>
+                      </object>
+                      <attributes>
+                        <attribute name="pixbuf">4</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                    <property name="title">Service</property>
+                    <property name="clickable">True</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort_column_id">0</property>
+                    <child>
+                      <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                      <attributes>
+                        <attribute name="text">0</attribute>
+                        <attribute name="weight">5</attribute>
+                      </attributes>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkTreeViewColumn" id="treeviewcolumn2">
+                    <property name="title">Description</property>
+                    <property name="clickable">True</property>
+                    <property name="reorderable">True</property>
                     <property name="sort_column_id">1</property>
                     <child>
                       <object class="GtkCellRendererText" id="cellrenderertext2"/>
@@ -127,16 +177,15 @@
                   </object>
                 </child>
                 <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                    <property name="sizing">autosize</property>
-                    <property name="title">Service</property>
-                    <property name="expand">True</property>
+                  <object class="GtkTreeViewColumn" id="treeviewcolumn4">
+                    <property name="title">Mode</property>
                     <property name="clickable">True</property>
-                    <property name="sort_column_id">0</property>
+                    <property name="reorderable">True</property>
+                    <property name="sort_column_id">3</property>
                     <child>
-                      <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                      <object class="GtkCellRendererText" id="cellrenderertext3"/>
                       <attributes>
-                        <attribute name="markup">2</attribute>
+                        <attribute name="text">3</attribute>
                       </attributes>
                     </child>
                   </object>
@@ -152,6 +201,7 @@
           <object class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
             <property name="border_width">5</property>
+            <property name="spacing">5</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">start</property>
             <child>
@@ -164,6 +214,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -189,26 +240,16 @@
           </packing>
         </child>
         <child>
-          <object class="GtkExpander" id="expander1">
+          <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="spacing">3</property>
             <child>
-              <object class="GtkLabel" id="lbl_details">
-                <property name="width_request">300</property>
-                <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="yalign">0</property>
-                <property name="xpad">10</property>
-                <property name="use_markup">True</property>
-                <property name="track_visited_links">False</property>
-              </object>
+              <placeholder/>
             </child>
-            <child type="label">
-              <object class="GtkLabel" id="label3">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Details</property>
-              </object>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -235,14 +276,8 @@
     <property name="visible">True</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkListStore" id="lst_jobs">
-    <columns>
-      <!-- column-name service -->
-      <column type="gchararray"/>
-      <!-- column-name running -->
-      <column type="gchararray"/>
-      <!-- column-name display -->
-      <column type="gchararray"/>
-    </columns>
+  <object class="GtkImage" id="img_running">
+    <property name="visible">True</property>
+    <property name="icon_name">system-run</property>
   </object>
 </interface>
