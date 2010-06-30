@@ -16,12 +16,15 @@ class RemoteJobService:
                 'com.ubuntu.JobService', '/com/ubuntu/JobService'),
                 'com.ubuntu.JobService')
     
-    def get_all_jobs(self):
+    def get_all_jobs(self, protect=True):
+        self.jobs = {}
         def call(): return self.jobservice.GetAllJobs()
         alljobs = retry(self._connect, call)
         for job, path in alljobs:
-            if not is_protected(job):
+            protected = is_protected(job)
+            if not protect or not protected:
                 self.jobs[job] = RemoteJob(job, path)
+                self.jobs[job].protected = protected
         return self.jobs
     
 
@@ -35,6 +38,7 @@ class RemoteJob:
         self.name = name
         self.path = path
         self.props = {}
+        self.protected = False
         self._connect()
         
     def _connect(self):

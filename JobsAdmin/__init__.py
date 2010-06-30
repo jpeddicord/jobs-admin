@@ -52,6 +52,8 @@ class JobsAdminUI:
         self.act_job_start.connect('activate', self.job_toggle)
         self.act_job_stop.connect('activate', self.job_toggle)
         self.act_job_settings.connect('activate', self.show_settings)
+        self.act_protected.connect('activate', self.set_protected)
+        
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
         
@@ -59,14 +61,15 @@ class JobsAdminUI:
         name, size = self.img_running.get_icon_name()
         self.pb_running = self.icon_theme.load_icon(name, 16, 0)
     
-    def load_jobs(self):
+    def load_jobs(self, *args):
         self.lst_jobs.clear()
-        for jobname, job in self.jobservice.get_all_jobs().iteritems():
+        protect = not self.act_protected.props.active
+        for jobname, job in self.jobservice.get_all_jobs(protect).iteritems():
             mode = "Auto" if job.automatic else "Manual"
             running_img = self.pb_running if job.running else None
             service_weight = 700 if job.running else 400
             self.lst_jobs.append((jobname, job.description, job.running,
-                    mode, running_img, service_weight))
+                    mode, running_img, service_weight, not job.protected))
         self.lst_jobs.set_sort_column_id(0, gtk.SORT_ASCENDING)
         # put the cursor on something to trigger show_job_details
         self.tv_jobs.set_cursor(self.active_index)
@@ -91,9 +94,9 @@ class JobsAdminUI:
             self.btn_job_toggle.props.label = "_Start"
             self.btn_job_toggle.set_related_action(self.act_job_start)
         # enable/disable some actions
-        self.act_job_settings.props.sensitive = job.settings
-        self.act_job_start.props.sensitive = not job.running
-        self.act_job_stop.props.sensitive = job.running
+        self.act_job_settings.props.sensitive = job.settings and not job.protected
+        self.act_job_start.props.sensitive = not job.running and not job.protected
+        self.act_job_stop.props.sensitive = job.running and not job.protected
         # backend type
         self.lbl_job_type.props.label = BACKEND_NAMES[job.backend] \
                 if job.backend in BACKEND_NAMES else "Unknown"
@@ -172,6 +175,10 @@ class JobsAdminUI:
         self.win_main.get_window().set_cursor(cursor)
         for obj in self.win_main.get_children():
             obj.props.sensitive = not waiting
+    
+    def set_protected(self, action):
+        self.active_index = 0
+        self.load_jobs()
     
     def link_clicked(self, label, uri):
         """
