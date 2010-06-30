@@ -29,10 +29,14 @@ class JobsAdminUI:
             'tv_jobs',
             'btn_job_toggle',
             'img_job_toggle',
-            'btn_job_settings',
             'lbl_job_type',
             'lbl_job_starts',
             'lbl_job_stops',
+            'act_job_settings',
+            'act_job_start',
+            'act_job_stop',
+            'act_protected',
+            'mi_quit',
             'img_running',
             'lst_jobs',
         ]
@@ -40,12 +44,14 @@ class JobsAdminUI:
             self.__dict__[obj] = self.builder.get_object(obj)
         
         self.win_main.connect('destroy', gtk.main_quit)
+        self.mi_quit.connect('activate', gtk.main_quit)
         
         self.tv_jobs_sel = self.tv_jobs.get_selection()
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
         
-        self.btn_job_toggle.connect('clicked', self.job_toggle)
-        self.btn_job_settings.connect('clicked', self.show_settings)
+        self.act_job_start.connect('activate', self.job_toggle)
+        self.act_job_stop.connect('activate', self.job_toggle)
+        self.act_job_settings.connect('activate', self.show_settings)
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
         
@@ -56,7 +62,6 @@ class JobsAdminUI:
     def load_jobs(self):
         self.lst_jobs.clear()
         for jobname, job in self.jobservice.get_all_jobs().iteritems():
-            markup = "<b>{0}</b> - <i>{1}</i>".format(jobname, job.description)
             mode = "Auto" if job.automatic else "Manual"
             running_img = self.pb_running if job.running else None
             service_weight = 700 if job.running else 400
@@ -79,12 +84,16 @@ class JobsAdminUI:
             self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
                                                gtk.ICON_SIZE_BUTTON)
             self.btn_job_toggle.props.label = "_Stop"
+            self.btn_job_toggle.set_related_action(self.act_job_stop)
         else:
             self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_PLAY,
                                                gtk.ICON_SIZE_BUTTON)
             self.btn_job_toggle.props.label = "_Start"
-        # enable/disable job settings
-        self.btn_job_settings.props.sensitive = job.settings
+            self.btn_job_toggle.set_related_action(self.act_job_start)
+        # enable/disable some actions
+        self.act_job_settings.props.sensitive = job.settings
+        self.act_job_start.props.sensitive = not job.running
+        self.act_job_stop.props.sensitive = job.running
         # backend type
         self.lbl_job_type.props.label = BACKEND_NAMES[job.backend] \
                 if job.backend in BACKEND_NAMES else "Unknown"
@@ -122,7 +131,6 @@ class JobsAdminUI:
         def reply():
             self.set_waiting(False)
             self.load_jobs()
-            # TODO: call show_job_info? gtk may take care of this
         def error(e):
             # ignore deniedbypolicy errors
             if not 'DeniedByPolicy' in e._dbus_error_name:

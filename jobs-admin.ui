@@ -41,8 +41,8 @@
                       <object class="GtkCheckMenuItem" id="mi_protected">
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Show jobs that have been marked as essential to the operating system</property>
-                        <property name="label" translatable="yes">Show _Protected Jobs</property>
-                        <property name="use_underline">True</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_protected</property>
                       </object>
                     </child>
                     <child>
@@ -72,27 +72,25 @@
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_start">
-                        <property name="label" translatable="yes">_Start</property>
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="image">image1</property>
-                        <property name="use_stock">False</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_job_start</property>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_stop">
-                        <property name="label" translatable="yes">St_op</property>
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="image">image2</property>
-                        <property name="use_stock">False</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_job_stop</property>
+                        <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="mi_job_settings">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Job Se_ttings...</property>
-                        <property name="use_underline">True</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_job_settings</property>
                       </object>
                     </child>
                   </object>
@@ -234,10 +232,11 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="btn_job_settings">
-                    <property name="label" translatable="yes">_Job Settings...</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="use_action_appearance">True</property>
+                    <property name="related_action">act_job_settings</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -370,14 +369,6 @@
     <property name="visible">True</property>
     <property name="stock">gtk-missing-image</property>
   </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="stock">gtk-media-play</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="stock">gtk-media-stop</property>
-  </object>
   <object class="GtkAboutDialog" id="dlg_about">
     <property name="border_width">5</property>
     <property name="type_hint">normal</property>
@@ -406,5 +397,19 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkAction" id="act_job_settings">
+    <property name="label">Job Se_ttings...</property>
+  </object>
+  <object class="GtkAction" id="act_job_start">
+    <property name="label">_Start</property>
+    <property name="stock_id">gtk-media-play</property>
+  </object>
+  <object class="GtkAction" id="act_job_stop">
+    <property name="label">St_op</property>
+    <property name="stock_id">gtk-media-stop</property>
+  </object>
+  <object class="GtkToggleAction" id="act_protected">
+    <property name="label">Show _Protected Jobs</property>
   </object>
 </interface>
