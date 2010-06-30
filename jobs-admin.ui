@@ -37,7 +37,7 @@
                 <property name="label" translatable="yes">_Jobs</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu1">
+                  <object class="GtkMenu" id="menu_jobs">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkCheckMenuItem" id="mi_protected">
@@ -70,7 +70,7 @@
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu2">
+                  <object class="GtkMenu" id="menu_edit">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_start">
@@ -105,7 +105,7 @@
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu3">
+                  <object class="GtkMenu" id="menu_help">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="mi_about">
