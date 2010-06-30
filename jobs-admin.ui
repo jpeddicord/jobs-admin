@@ -38,7 +38,20 @@
                   <object class="GtkMenu" id="menu1">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem5">
+                      <object class="GtkCheckMenuItem" id="mi_protected">
+                        <property name="visible">True</property>
+                        <property name="tooltip_text" translatable="yes">Show jobs that have been marked as essential to the operating system</property>
+                        <property name="label" translatable="yes">Show _Protected Jobs</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="mi_quit">
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -58,7 +71,7 @@
                   <object class="GtkMenu" id="menu2">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem6">
+                      <object class="GtkImageMenuItem" id="mi_job_start">
                         <property name="label" translatable="yes">_Start</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -67,7 +80,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem7">
+                      <object class="GtkImageMenuItem" id="mi_job_stop">
                         <property name="label" translatable="yes">St_op</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -76,12 +89,10 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem8">
-                        <property name="label" translatable="yes">Job Se_ttings...</property>
+                      <object class="GtkMenuItem" id="mi_job_settings">
                         <property name="visible">True</property>
+                        <property name="label" translatable="yes">Job Se_ttings...</property>
                         <property name="use_underline">True</property>
-                        <property name="image">image3</property>
-                        <property name="use_stock">False</property>
                       </object>
                     </child>
                   </object>
@@ -97,7 +108,7 @@
                   <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem10">
+                      <object class="GtkImageMenuItem" id="mi_about">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -351,24 +362,49 @@
       </object>
     </child>
   </object>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
-  <object class="GtkImage" id="image3">
-    <property name="visible">True</property>
-    <property name="stock">gtk-missing-image</property>
-  </object>
   <object class="GtkImage" id="img_running">
     <property name="visible">True</property>
-    <property name="icon_name">system-run</property>
+    <property name="icon_name">media-playback-start</property>
   </object>
   <object class="GtkImage" id="img_job_toggle">
     <property name="visible">True</property>
     <property name="stock">gtk-missing-image</property>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="stock">gtk-media-play</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="stock">gtk-media-stop</property>
+  </object>
+  <object class="GtkAboutDialog" id="dlg_about">
+    <property name="border_width">5</property>
+    <property name="type_hint">normal</property>
+    <property name="transient_for">win_main</property>
+    <property name="has_separator">False</property>
+    <property name="program_name">jobs-admin</property>
+    <property name="website">https://launchpad.net/jobs-admin</property>
+    <property name="website_label" translatable="yes">jobs-admin on Launchpad</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox1">
+        <property name="visible">True</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
 </interface>
