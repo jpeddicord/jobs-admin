@@ -36,6 +36,9 @@ class JobsAdminUI:
             'act_job_start',
             'act_job_stop',
             'act_protected',
+            'menu_jobs',
+            'menu_edit',
+            'menu_help',
             'mi_quit',
             'img_running',
             'lst_jobs',
@@ -60,6 +63,16 @@ class JobsAdminUI:
         self.icon_theme = gtk.icon_theme_get_default()
         name, size = self.img_running.get_icon_name()
         self.pb_running = self.icon_theme.load_icon(name, 16, 0)
+        
+        # this isn't a gtk property, it's for extras to use
+        for m in (self.menu_jobs, self.menu_edit, self.menu_help):
+            m.extended = False
+        
+        # load extras
+        self.extras = []
+        for extra in ('apport', ):
+            mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
+            self.extras.append(mod.Extra(self))
     
     def load_jobs(self, *args):
         self.lst_jobs.clear()
