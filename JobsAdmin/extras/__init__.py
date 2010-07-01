@@ -12,8 +12,11 @@ class AllExtras(ExtraBase):
         self.ui = ui
         self.extras = []
         for extra in ('apport', 'packagekit'):
-            mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
-            self.extras.append(mod.Extra(self.ui))
+            try:
+                mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
+                self.extras.append(mod.Extra(self.ui))
+            except:
+                pass
     
     def update_ui(self):
         for extra in self.extras:
