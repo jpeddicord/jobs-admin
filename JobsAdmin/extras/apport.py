@@ -13,14 +13,18 @@ class Extra(ExtraBase):
         self.ui = ui
         
         self.mi_apport = gtk.MenuItem("Report Service Problem")
-        self.mi_apport.connect('activate', self.report_problem)
+        self.mi_apport.connect('activate', self._report_problem)
         
         if not self.ui.menu_edit.extended:
             self.ui.menu_edit.append(gtk.SeparatorMenuItem())
             self.ui.menu_edit.extended = True
         self.ui.menu_edit.append(self.mi_apport)
+    
+    def update_ui(self):
+        # don't run for protected jobs
+        self.mi_apport.props.sensitive = not self.ui.active_job.protected
         
-    def report_problem(self, mi):
+    def _report_problem(self, mi):
         dlg = gtk.MessageDialog(self.ui.win_main, gtk.DIALOG_MODAL,
                 gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL,
                 "Report a problem with {service}?".format(

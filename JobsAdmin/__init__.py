@@ -2,6 +2,7 @@
 import gtk
 from gobject import idle_add
 from dbus.exceptions import DBusException
+from JobsAdmin.extras import AllExtras
 from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.settings import SettingsDialog
 
@@ -69,10 +70,7 @@ class JobsAdminUI:
             m.extended = False
         
         # load extras
-        self.extras = []
-        for extra in ('apport', ):
-            mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
-            self.extras.append(mod.Extra(self))
+        self.extras = AllExtras(self)
     
     def load_jobs(self, *args):
         self.lst_jobs.clear()
@@ -137,6 +135,8 @@ class JobsAdminUI:
         self.lbl_job_stops.props.label = "Unknown"
         if starton: self.lbl_job_starts.props.label = ", ".join(starton)
         if stopon: self.lbl_job_stops.props.label = ", ".join(stopon)
+        # finally, tell our extras about the ui changes
+        self.extras.update_ui()
 
     def job_toggle(self, button):
         """
