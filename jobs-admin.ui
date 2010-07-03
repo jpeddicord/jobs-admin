@@ -43,8 +43,8 @@
                       <object class="GtkCheckMenuItem" id="mi_protected">
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Show jobs that have been marked as essential to the operating system</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_protected</property>
+                        <property name="use_action_appearance">True</property>
                       </object>
                     </child>
                     <child>
@@ -75,24 +75,26 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_start">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_job_start</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_stop">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_job_stop</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="mi_job_settings">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_job_settings</property>
+                        <property name="use_action_appearance">True</property>
                       </object>
                     </child>
                   </object>
@@ -137,7 +139,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="model">lst_jobs</property>
-                <property name="reorderable">True</property>
                 <property name="rules_hint">True</property>
                 <property name="search_column">0</property>
                 <property name="show_expanders">False</property>
@@ -241,8 +242,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_action_appearance">True</property>
                     <property name="related_action">act_job_settings</property>
+                    <property name="use_action_appearance">True</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
