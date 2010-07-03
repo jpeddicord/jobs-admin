@@ -1,9 +1,12 @@
 
-from subprocess import Popen
 from dbus import SystemBus, Interface
 import gtk
 from JobsAdmin.extras import ExtraBase
 
+# this will end here if PK is not installed
+from packagekit.gtkwidgets import PackageKitInstaller
+
+#TODO: this appears broken on lucid, will resume development on maverick.
 
 class Extra(ExtraBase):
     
@@ -25,7 +28,8 @@ class Extra(ExtraBase):
     def _uninstall_package(self, mi):
         self.ui.set_waiting()
         def search_cb(info, package_id, summary):
-            # TODO: call RemovePackages with package_id
+            pki = PackageKitInstaller(parent=self.ui.win_main)
+            pki.remove_by_name((package_id.split(';')[0],))
             self.ui.set_waiting(False)
         tid = self.pkit.GetTid()
         txn = Interface(self.bus.get_object('org.freedesktop.PackageKit', tid),
