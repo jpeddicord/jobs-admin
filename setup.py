@@ -11,7 +11,7 @@ setup_info = dict(
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',
     url='https://launchpad.net/jobsadmin',
-    packages=['JobsAdmin'],
+    packages=['JobsAdmin', 'JobsAdmin.extras'],
     scripts=['jobs-admin'],
     data_files=[
         ('share/applications', ['jobs-admin.desktop']),
