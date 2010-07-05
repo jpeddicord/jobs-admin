@@ -11,7 +11,7 @@ class AllExtras(ExtraBase):
     def __init__(self, ui):
         self.ui = ui
         self.extras = []
-        for extra in ('apportreport', 'pkit'):
+        for extra in ('apportreport', ):
             try:
                 mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
                 self.extras.append(mod.Extra(self.ui))
