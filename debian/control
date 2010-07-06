@@ -9,6 +9,7 @@ Homepage: https://launchpad.net/jobs-admin
 Package: jobs-admin
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-gtk2, jobservice
+Recommends: apport-gtk
 Description: system job management
  jobs-admin is a frontend for jobservice. It allows for easy browsing and
  management of system jobs of any type that jobservice supports.
