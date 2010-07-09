@@ -406,17 +406,17 @@
     </child>
   </object>
   <object class="GtkAction" id="act_job_settings">
-    <property name="label">Job Se_ttings...</property>
+    <property name="label" translatable="yes">Job Se_ttings...</property>
   </object>
   <object class="GtkAction" id="act_job_start">
-    <property name="label">_Start</property>
+    <property name="label" translatable="yes">_Start</property>
     <property name="stock_id">gtk-media-play</property>
   </object>
   <object class="GtkAction" id="act_job_stop">
-    <property name="label">St_op</property>
+    <property name="label" translatable="yes">St_op</property>
     <property name="stock_id">gtk-media-stop</property>
   </object>
   <object class="GtkToggleAction" id="act_protected">
-    <property name="label">Show _Protected Jobs</property>
+    <property name="label" translatable="yes">Show _Protected Jobs</property>
   </object>
 </interface>
