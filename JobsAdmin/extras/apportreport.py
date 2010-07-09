@@ -12,7 +12,7 @@ class Extra(ExtraBase):
     def __init__(self, ui):
         self.ui = ui
         
-        self.mi_apport = gtk.MenuItem("Report Service Problem")
+        self.mi_apport = gtk.MenuItem(_("Report Service Problem"))
         self.mi_apport.connect('activate', self._report_problem)
         
         if not self.ui.menu_edit.extended:
@@ -27,7 +27,7 @@ class Extra(ExtraBase):
     def _report_problem(self, mi):
         dlg = gtk.MessageDialog(self.ui.win_main, gtk.DIALOG_MODAL,
                 gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL,
-                "Report a problem with {service}?".format(
+                _("Report a problem with {service}?").format(
                         service=self.ui.active_job.name))
         response = dlg.run()
         dlg.destroy()
@@ -38,7 +38,7 @@ class Extra(ExtraBase):
                 run.insert(0, 'gksu')
                 Popen([
                     'gksu', '-D', 'Apport',
-                    '-m', "Privileges are required to report this process.",
+                    '-m', _("Privileges are required to report this process."),
                     'apport-bug -f --pid {0}'.format(self.ui.active_job.pid)
                 ])
             else:

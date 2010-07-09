@@ -4,6 +4,12 @@ import gtk
 from dbus.mainloop.glib import DBusGMainLoop
 from JobsAdmin import JobsAdminUI
 
+# i18n
+import locale
+import gettext
+locale.setlocale(locale.LC_ALL, '')
+gettext.install('jobs-admin', '/usr/share/locale', unicode=True)
+
 DBusGMainLoop(set_as_default=True)
 
 ui = JobsAdminUI()

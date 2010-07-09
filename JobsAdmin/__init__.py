@@ -20,6 +20,10 @@ class JobsAdminUI:
         self.active_job = None
         self.active_index = 0
         self.builder = gtk.Builder()
+        
+        # https://bugzilla.gnome.org/show_bug.cgi?id=574520
+        self.builder.set_translation_domain('jobs-admin')
+        
         try:
             self.builder.add_from_file('jobs-admin.ui')
         except:
@@ -76,7 +80,7 @@ class JobsAdminUI:
         self.lst_jobs.clear()
         protect = not self.act_protected.props.active
         for jobname, job in self.jobservice.get_all_jobs(protect).iteritems():
-            mode = "Auto" if job.automatic else "Manual"
+            mode = _("Auto") if job.automatic else _("Manual")
             running_img = self.pb_running if job.running else None
             service_weight = 700 if job.running else 400
             self.lst_jobs.append((jobname, job.description, job.running,
@@ -97,12 +101,12 @@ class JobsAdminUI:
         if job.running:
             self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
                                                gtk.ICON_SIZE_BUTTON)
-            self.btn_job_toggle.props.label = "_Stop"
+            self.btn_job_toggle.props.label = _("_Stop")
             self.btn_job_toggle.set_related_action(self.act_job_stop)
         else:
             self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_PLAY,
                                                gtk.ICON_SIZE_BUTTON)
-            self.btn_job_toggle.props.label = "_Start"
+            self.btn_job_toggle.props.label = _("_Start")
             self.btn_job_toggle.set_related_action(self.act_job_start)
         # enable/disable some actions
         self.act_job_settings.props.sensitive = job.settings and not job.protected
@@ -110,16 +114,16 @@ class JobsAdminUI:
         self.act_job_stop.props.sensitive = job.running and not job.protected
         # backend type
         self.lbl_job_type.props.label = BACKEND_NAMES[job.backend] \
-                if job.backend in BACKEND_NAMES else "Unknown"
+                if job.backend in BACKEND_NAMES else _("Unknown")
         # starton/stopon vary slightly by backend
         starton = []
         stopon = []
         if job.backend == 'sysv_stb':
             if job.starton:
-                starton.append("on runlevels {list}".format(
+                starton.append(_("on runlevels {list}").format(
                         list=", ".join(job.starton)))
             if job.stopon:
-                stopon.append("on runlevels {list}".format(
+                stopon.append(_("on runlevels {list}").format(
                         list=", ".join(job.stopon)))
         elif job.backend == 'upstart_0_6':
             for mode, field in ((job.starton, starton), (job.stopon, stopon)):
@@ -131,8 +135,8 @@ class JobsAdminUI:
                         if jobname in self.jobservice.jobs:
                             jobname = "<a href='{0}'>{0}</a>".format(jobname)
                         field.append("on {0} {1}".format(action, jobname))
-        self.lbl_job_starts.props.label = "Unknown"
-        self.lbl_job_stops.props.label = "Unknown"
+        self.lbl_job_starts.props.label = _("Unknown")
+        self.lbl_job_stops.props.label = _("Unknown")
         if starton: self.lbl_job_starts.props.label = ", ".join(starton)
         if stopon: self.lbl_job_stops.props.label = ", ".join(stopon)
         # finally, tell our extras about the ui changes
@@ -150,10 +154,10 @@ class JobsAdminUI:
         def error(e):
             # ignore deniedbypolicy errors
             if not 'DeniedByPolicy' in e._dbus_error_name:
-                error = "A problem has occurred:\n\n\t{0}".format(
+                error = _("A problem has occurred:") + "\n\n\t{0}".format(
                                 e.get_dbus_message())
                 if self.active_job.settings:
-                    error += "\n\nTry changing the job settings and try again."
+                    error += "\n\n" + _("Try changing the job settings and try again.")
                 dlg = gtk.MessageDialog(self.win_main, gtk.DIALOG_MODAL,
                         gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, error)
                 dlg.run()
