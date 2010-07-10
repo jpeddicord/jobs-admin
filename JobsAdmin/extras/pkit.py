@@ -6,7 +6,9 @@ from JobsAdmin.extras import ExtraBase
 # this will end here if PK is not installed
 from packagekit.gtkwidgets import PackageKitInstaller
 
-#TODO: this appears broken on lucid, will resume development on maverick.
+#TODO: *sigh* packagekit is also broken in maverick, but in a different way.
+# see LP #603711
+assert False
 
 class Extra(ExtraBase):
     
@@ -35,5 +37,5 @@ class Extra(ExtraBase):
         txn = Interface(self.bus.get_object('org.freedesktop.PackageKit', tid),
                 'org.freedesktop.PackageKit.Transaction')
         txn.connect_to_signal('Package', search_cb)
-        txn.SearchFile('none', self.ui.active_job.file)
+        txn.SearchFiles('none', [self.ui.active_job.file])
         
