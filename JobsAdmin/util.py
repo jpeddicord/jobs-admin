@@ -1,5 +1,8 @@
 
+from locale import getdefaultlocale
 from dbus.exceptions import DBusException
+
+LANG = getdefaultlocale()[0]
 
 
 def retry(connect, func):

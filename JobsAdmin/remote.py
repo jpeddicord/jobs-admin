@@ -1,7 +1,7 @@
 
 from dbus import SystemBus, Interface, PROPERTIES_IFACE
 from JobsAdmin.protected import is_protected
-from JobsAdmin.util import retry
+from JobsAdmin.util import LANG, retry
 
 
 class RemoteJobService:
@@ -67,8 +67,7 @@ class RemoteJob:
         self.props = {}
     
     def get_settings(self, reply_handler=None, error_handler=None):
-        def call(): return self.interface.GetSettings('', #TODO: locale
-                timeout=500,
+        def call(): return self.interface.GetSettings(LANG, timeout=500,
                 reply_handler=reply_handler, error_handler=error_handler)
         return retry(self._connect, call)
         
