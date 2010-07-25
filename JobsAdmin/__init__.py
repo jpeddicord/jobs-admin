@@ -7,7 +7,8 @@ from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.settings import SettingsDialog
 
 BACKEND_NAMES = {
-    'sysv_stb': 'System V',
+    'sysv': 'System V',
+    'sysv_stb': 'System V (system-tools-backends)',
     'upstart_0_6': 'Upstart (0.6)',
     'upstart_0_10': 'Upstart (0.10)',
 }
