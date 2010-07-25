@@ -40,6 +40,15 @@
                   <object class="GtkMenu" id="menu_jobs">
                     <property name="visible">True</property>
                     <child>
+                      <object class="GtkImageMenuItem" id="mi_refresh">
+                        <property name="visible">True</property>
+                        <property name="related_action">act_refresh</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkCheckMenuItem" id="mi_protected">
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Show jobs that have been marked as essential to the operating system</property>
@@ -88,6 +97,33 @@
                         <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                        <property name="visible">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioMenuItem" id="mi_automatic">
+                        <property name="visible">True</property>
+                        <property name="related_action">act_auto</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="draw_as_radio">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkRadioMenuItem" id="mi_manual">
+                        <property name="visible">True</property>
+                        <property name="related_action">act_manual</property>
+                        <property name="use_action_appearance">True</property>
+                        <property name="draw_as_radio">True</property>
+                        <property name="group">mi_automatic</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
+                        <property name="visible">True</property>
                       </object>
                     </child>
                     <child>
@@ -242,8 +278,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="related_action">act_job_settings</property>
                     <property name="use_action_appearance">True</property>
+                    <property name="related_action">act_job_settings</property>
                     <property name="use_underline">True</property>
                   </object>
                   <packing>
@@ -406,17 +442,32 @@
     </child>
   </object>
   <object class="GtkAction" id="act_job_settings">
-    <property name="label" translatable="yes">Job Se_ttings...</property>
+    <property name="label">Job Se_ttings...</property>
   </object>
   <object class="GtkAction" id="act_job_start">
-    <property name="label" translatable="yes">_Start</property>
+    <property name="label">_Start</property>
     <property name="stock_id">gtk-media-play</property>
   </object>
   <object class="GtkAction" id="act_job_stop">
-    <property name="label" translatable="yes">St_op</property>
+    <property name="label">St_op</property>
     <property name="stock_id">gtk-media-stop</property>
   </object>
   <object class="GtkToggleAction" id="act_protected">
-    <property name="label" translatable="yes">Show _Protected Jobs</property>
+    <property name="label">Show _Protected Jobs</property>
+  </object>
+  <object class="GtkAction" id="act_refresh">
+    <property name="label">_Refresh</property>
+    <property name="stock_id">gtk-refresh</property>
+  </object>
+  <object class="GtkRadioAction" id="act_auto">
+    <property name="label">Automatic</property>
+    <property name="draw_as_radio">True</property>
+    <property name="value">1</property>
+    <property name="current_value">1</property>
+  </object>
+  <object class="GtkRadioAction" id="act_manual">
+    <property name="label">Manual</property>
+    <property name="draw_as_radio">True</property>
+    <property name="group">act_auto</property>
   </object>
 </interface>
