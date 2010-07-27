@@ -181,7 +181,6 @@ class JobsAdminUI:
         if child:
             self.frm_settings.remove(child)
         self.frm_settings.add(tbl)
-        self.frm_settings.show_all()
         
     def set_waiting(self, waiting=True):
         """Disable the UI or re-enable it for an action."""

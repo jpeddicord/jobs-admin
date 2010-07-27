@@ -8,10 +8,19 @@ class SettingsTable(gtk.Table):
         self.job = job
         self.settings = job.get_settings()
         gtk.Table.__init__(self, len(self.settings) + 1, 2)
-        self.widgets = {}
         self.props.row_spacing = 5
         self.props.column_spacing = 10
         self.props.border_width = 5
+        self._load_settings(self.settings)
+    
+    def _load_settings(self, settings=None):
+        if not settings:
+            settings = self.job.get_settings()
+        self.widgets = {}
+        
+        # clear it out first
+        for w in self:
+            self.remove(w)
         
         row = 0
         # add the settings fields
@@ -78,6 +87,8 @@ class SettingsTable(gtk.Table):
         save.connect('clicked', self.apply_settings)
         hbb.pack_start(save)
         self.attach(hbb, 0, 2, row, row + 1)
+        
+        self.show_all()
             
     def apply_settings(self, *args):
         newsettings = {}
@@ -100,6 +111,6 @@ class SettingsTable(gtk.Table):
             if value != setting[3]:
                 newsettings[setting[0]] = value
         self.job.set_settings(newsettings)
-        # reload internal settings values
-        self.settings = self.job.get_settings()
+        # reload settings display
+        self._load_settings()
 
