@@ -18,8 +18,8 @@
   </object>
   <object class="GtkWindow" id="win_main">
     <property name="title" translatable="yes">System Job Administration</property>
-    <property name="default_width">600</property>
-    <property name="default_height">350</property>
+    <property name="default_width">700</property>
+    <property name="default_height">400</property>
     <property name="icon_name">system-run</property>
     <child>
       <object class="GtkVBox" id="vbox1">
@@ -129,9 +129,11 @@
           <object class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="position">350</property>
+            <property name="position_set">True</property>
             <child>
               <object class="GtkScrolledWindow" id="scrolledwindow1">
-                <property name="width_request">300</property>
+                <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hscrollbar_policy">automatic</property>
@@ -139,7 +141,6 @@
                 <property name="shadow_type">in</property>
                 <child>
                   <object class="GtkTreeView" id="tv_jobs">
-                    <property name="width_request">300</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="model">lst_jobs</property>
@@ -179,7 +180,7 @@
               </object>
               <packing>
                 <property name="resize">True</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>

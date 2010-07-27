@@ -16,6 +16,7 @@ class SettingsTable(gtk.Table):
     def _load_settings(self, settings=None):
         if not settings:
             settings = self.job.get_settings()
+        self.settings = settings
         self.widgets = {}
         
         # clear it out first
@@ -63,13 +64,18 @@ class SettingsTable(gtk.Table):
             elif stype == 'dir':
                 widget = gtk.FileChooserButton("Choose a folder")
             
+            elif stype == 'label':
+                widget = gtk.Label()
+                widget.props.xalign = 0
+                widget.set_markup(desc)
+            
             # use a string for 'str' and all other unknowns
             else:
                 widget = gtk.Entry()
                 widget.props.text = val
             
-            # checkboxes already have labels
-            if stype == 'bool':
+            # checkboxes & labels don't need extra labels
+            if stype == 'bool' or stype == 'label':
                 self.attach(widget, 0, 2, row, row + 1)
             # but the others don't; let's add them
             else:
@@ -105,6 +111,8 @@ class SettingsTable(gtk.Table):
                 value = widget.get_model()[widget.props.active][0]
             elif setting[1] == 'file' or setting[1] == 'dir':
                 value = "unknown" #TODO
+            elif setting[1] == 'label':
+                continue
             else: # str and unknowns
                 value = widget.props.text
             # only send it if changed

@@ -81,9 +81,9 @@ class JobsAdminUI:
         for jobname, job in self.jobservice.get_all_jobs(protect).iteritems():
             weight = 700 if job.running else 400
             if job.running:
-                markup = "<b>{0}</b>\n<small>{1}</small>"
+                markup = "<b>{1}</b>\n<small>{0}</small>"
             else:
-                markup = "{0}\n<small>{1}</small>"
+                markup = "{1}\n<small>{0}</small>"
             markup = markup.format(jobname, job.description)
             # update these if the liststore changes structure
             self.lst_jobs.append((jobname, markup, job.running,
