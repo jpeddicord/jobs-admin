@@ -84,7 +84,10 @@ class JobsAdminUI:
                 markup = "<b>{1}</b>\n<small>{0}</small>"
             else:
                 markup = "{1}\n<small>{0}</small>"
-            markup = markup.format(jobname, job.description)
+            if job.description:
+                markup = markup.format(jobname, job.description)
+            else:
+                markup = markup.format('', jobname)
             # update these if the liststore changes structure
             self.lst_jobs.append((jobname, markup, job.running,
                                   job.automatic, not job.protected))
