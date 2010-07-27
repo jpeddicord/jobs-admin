@@ -173,15 +173,31 @@ class JobsAdminUI:
     
     def show_settings(self):
         """Load the settings table for this job."""
+        # only show for non-protected jobs with published settings
         if not self.active_job.settings or self.active_job.protected:
             self.frm_settings.hide_all()
             return
         tbl = SettingsTable(self.active_job)
+        # apply button
+        hbb = gtk.HButtonBox()
+        hbb.props.layout_style = gtk.BUTTONBOX_END
+        save = gtk.Button(stock='gtk-apply') 
+        save.connect('clicked', self.apply_settings, tbl) #XXX causes cirular reference
+        hbb.pack_start(save)
+        row = tbl.props.n_rows
+        tbl.attach(hbb, 0, 2, row, row + 1)
+        # remove the old table if present
         child = self.frm_settings.get_child()
         if child:
             self.frm_settings.remove(child)
         self.frm_settings.add(tbl)
         self.frm_settings.show_all()
+    
+    def apply_settings(self, button, tbl):
+        """Call on the supplied SettingsTable to save settings and reload."""
+        print "applying"
+        tbl.apply_settings()
+        self.load_jobs()
         
     def set_waiting(self, waiting=True):
         """Disable the UI or re-enable it for an action."""

@@ -7,17 +7,11 @@ class SettingsTable(gtk.Table):
     def __init__(self, job):
         self.job = job
         self.settings = job.get_settings()
+        self.widgets = {}
         gtk.Table.__init__(self, len(self.settings) + 1, 2)
         self.props.row_spacing = 5
         self.props.column_spacing = 10
         self.props.border_width = 5
-        self._load_settings(self.settings)
-    
-    def _load_settings(self, settings=None):
-        if not settings:
-            settings = self.job.get_settings()
-        self.settings = settings
-        self.widgets = {}
         
         # clear it out first
         for w in self:
@@ -87,13 +81,6 @@ class SettingsTable(gtk.Table):
             row += 1
             self.widgets[name] = widget
         
-        hbb = gtk.HButtonBox()
-        hbb.props.layout_style = gtk.BUTTONBOX_END
-        save = gtk.Button(stock='gtk-apply') 
-        save.connect('clicked', self.apply_settings)
-        hbb.pack_start(save)
-        self.attach(hbb, 0, 2, row, row + 1)
-        
         self.show_all()
             
     def apply_settings(self, *args):
@@ -119,6 +106,4 @@ class SettingsTable(gtk.Table):
             if value != setting[3]:
                 newsettings[setting[0]] = value
         self.job.set_settings(newsettings)
-        # reload settings display
-        self._load_settings()
 

@@ -87,4 +87,5 @@ class RemoteJob:
         def call(): self.interface.SetSettings(settings, timeout=500,
                 reply_handler=reply_handler, error_handler=error_handler)
         retry(self._connect, call)
-        
+        self.props = {}
+
