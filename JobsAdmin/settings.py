@@ -2,23 +2,16 @@
 import gtk
 
 
-class SettingsDialog(gtk.Dialog):
+class SettingsTable(gtk.Table):
     
-    def __init__(self, job, settings, parent=None):
-        gtk.Dialog.__init__(self, _("Job Settings"), parent, gtk.DIALOG_MODAL, (
-            gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-        ))
-        # dialog actions
-        self.connect('response', self.apply_settings)
+    def __init__(self, job):
         self.job = job
-        self.settings = settings
+        self.settings = job.get_settings()
+        gtk.Table.__init__(self, len(self.settings) + 1, 2)
         self.widgets = {}
-        # use a table layout
-        self.table = gtk.Table(len(self.settings), 2)
-        self.table.props.row_spacing = 5
-        self.table.props.column_spacing = 10
-        self.table.props.border_width = 5
+        self.props.row_spacing = 5
+        self.props.column_spacing = 10
+        self.props.border_width = 5
         
         row = 0
         # add the settings fields
@@ -68,23 +61,25 @@ class SettingsDialog(gtk.Dialog):
             
             # checkboxes already have labels
             if stype == 'bool':
-                self.table.attach(widget, 0, 2, row, row + 1)
+                self.attach(widget, 0, 2, row, row + 1)
             # but the others don't; let's add them
             else:
                 lbl = gtk.Label("{0}:".format(desc))
                 lbl.props.xalign = 0
-                self.table.attach(lbl, 0, 1, row, row + 1)
-                self.table.attach(widget, 1, 2, row, row + 1)
+                self.attach(lbl, 0, 1, row, row + 1)
+                self.attach(widget, 1, 2, row, row + 1)
             
             row += 1
             self.widgets[name] = widget
         
-        self.vbox.pack_start(self.table)
-        self.vbox.show_all()
+        hbb = gtk.HButtonBox()
+        hbb.props.layout_style = gtk.BUTTONBOX_END
+        save = gtk.Button(stock='gtk-apply') 
+        save.connect('clicked', self.apply_settings)
+        hbb.pack_start(save)
+        self.attach(hbb, 0, 2, row, row + 1)
             
-    def apply_settings(self, dialog, response):
-        if response != gtk.RESPONSE_ACCEPT:
-            return
+    def apply_settings(self, *args):
         newsettings = {}
         for setting in self.settings:
             widget = self.widgets[setting[0]]
@@ -105,4 +100,6 @@ class SettingsDialog(gtk.Dialog):
             if value != setting[3]:
                 newsettings[setting[0]] = value
         self.job.set_settings(newsettings)
+        # reload internal settings values
+        self.settings = self.job.get_settings()
 

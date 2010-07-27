@@ -4,7 +4,7 @@ from gobject import idle_add
 from dbus.exceptions import DBusException
 from JobsAdmin.extras import AllExtras
 from JobsAdmin.remote import RemoteJobService
-from JobsAdmin.settings import SettingsDialog
+from JobsAdmin.settings import SettingsTable
 
 BACKEND_NAMES = {
     'sysv': 'System V',
@@ -38,7 +38,6 @@ class JobsAdminUI:
             'lbl_job_type',
             'lbl_job_starts',
             'lbl_job_stops',
-            'act_job_settings',
             'act_job_start',
             'act_job_stop',
             'act_refresh',
@@ -47,6 +46,7 @@ class JobsAdminUI:
             'menu_edit',
             'menu_help',
             'mi_quit',
+            'frm_settings',
             'lst_jobs',
         ]
         for obj in objects:
@@ -60,7 +60,6 @@ class JobsAdminUI:
         
         self.act_job_start.connect('activate', self.job_toggle)
         self.act_job_stop.connect('activate', self.job_toggle)
-        self.act_job_settings.connect('activate', self.show_settings)
         self.act_refresh.connect('activate', self.load_jobs)
         self.act_protected.connect('activate', self.set_protected)
         
@@ -75,6 +74,7 @@ class JobsAdminUI:
         self.extras = AllExtras(self)
     
     def load_jobs(self, *args):
+        """Load the job listing and populate the liststore."""
         self.lst_jobs.clear()
         protect = not self.act_protected.props.active
         for jobname, job in self.jobservice.get_all_jobs(protect).iteritems():
@@ -92,30 +92,14 @@ class JobsAdminUI:
         self.tv_jobs.set_cursor(self.active_index)
     
     def show_job_info(self, treeview):
-        """
-        Updates the UI with the currently selected job's info.
-        """
+        """Update the UI with the currently selected job's info."""
         model, treeiter = self.tv_jobs_sel.get_selected()
         self.active_index = self.tv_jobs_sel.get_selected_rows()[1][0][0]
         jobname = self.lst_jobs.get_value(treeiter, 0)
         self.active_job = job = self.jobservice.jobs[jobname]
-        # change the start/stop button
-        if job.running:
-            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_STOP,
-                                               gtk.ICON_SIZE_BUTTON)
-            self.btn_job_toggle.props.label = _("_Stop")
-            self.btn_job_toggle.set_related_action(self.act_job_stop)
-        else:
-            self.img_job_toggle.set_from_stock(gtk.STOCK_MEDIA_PLAY,
-                                               gtk.ICON_SIZE_BUTTON)
-            self.btn_job_toggle.props.label = _("_Start")
-            self.btn_job_toggle.set_related_action(self.act_job_start)
         # enable/disable some actions
-        self.act_job_settings.props.sensitive = job.settings and not job.protected
         self.act_job_start.props.sensitive = not job.running and not job.protected
         self.act_job_stop.props.sensitive = job.running and not job.protected
-        # auto/manual
-        #self.act_automatic.props.current_value = 0 if job.automatic else 1
         # backend type
         self.lbl_job_type.props.label = BACKEND_NAMES[job.backend] \
                 if job.backend in BACKEND_NAMES else _("Unknown")
@@ -143,13 +127,13 @@ class JobsAdminUI:
         self.lbl_job_stops.props.label = _("Unknown")
         if starton: self.lbl_job_starts.props.label = ", ".join(starton)
         if stopon: self.lbl_job_stops.props.label = ", ".join(stopon)
+        # load settings
+        self.show_settings()
         # finally, tell our extras about the ui changes
         self.extras.update_ui()
 
     def job_toggle(self, button):
-        """
-        Turn a job on or off.
-        """
+        """Turn a job on or off."""
         self.set_waiting()
         # async callbacks so we don't appear to freeze
         def reply():
@@ -172,26 +156,20 @@ class JobsAdminUI:
         else:
             self.active_job.start(reply_handler=reply, error_handler=error)
     
-    def show_settings(self, button):
-        """
-        Show the settings dialog for this job.
-        """
-        self.set_waiting()
-        def reply(settings):
-            self.set_waiting(False)
-            dlg = SettingsDialog(self.active_job, settings, self.win_main)
-            dlg.run()
-            dlg.destroy()
-        def error(e):
-            self.set_waiting(False)
-            if not 'DeniedByPolicy' in e._dbus_error_name:
-                raise e
-        self.active_job.get_settings(reply_handler=reply, error_handler=error)
+    def show_settings(self):
+        """Load the settings table for this job."""
+        if not self.active_job.settings or self.active_job.protected:
+            self.frm_settings.hide_all()
+            return
+        tbl = SettingsTable(self.active_job)
+        child = self.frm_settings.get_child()
+        if child:
+            self.frm_settings.remove(child)
+        self.frm_settings.add(tbl)
+        self.frm_settings.show_all()
         
     def set_waiting(self, waiting=True):
-        """
-        Disable the UI or re-enable it for an action.
-        """
+        """Disable the UI or re-enable it for an action."""
         cursor = gtk.gdk.Cursor(gtk.gdk.WATCH if waiting else gtk.gdk.ARROW)
         self.win_main.get_window().set_cursor(cursor)
         for obj in self.win_main.get_children():
@@ -202,9 +180,7 @@ class JobsAdminUI:
         self.load_jobs()
     
     def link_clicked(self, label, uri):
-        """
-        Action for any link clicked to change to that job.
-        """
+        """Action for any link clicked to change to that job."""
         self.active_index = 0
         for job in self.lst_jobs:
             if uri == job[0]:
