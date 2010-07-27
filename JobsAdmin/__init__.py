@@ -41,12 +41,12 @@ class JobsAdminUI:
             'act_job_settings',
             'act_job_start',
             'act_job_stop',
+            'act_refresh',
             'act_protected',
             'menu_jobs',
             'menu_edit',
             'menu_help',
             'mi_quit',
-            'img_running',
             'lst_jobs',
         ]
         for obj in objects:
@@ -61,14 +61,11 @@ class JobsAdminUI:
         self.act_job_start.connect('activate', self.job_toggle)
         self.act_job_stop.connect('activate', self.job_toggle)
         self.act_job_settings.connect('activate', self.show_settings)
+        self.act_refresh.connect('activate', self.load_jobs)
         self.act_protected.connect('activate', self.set_protected)
         
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
-        
-        self.icon_theme = gtk.icon_theme_get_default()
-        name, size = self.img_running.get_icon_name()
-        self.pb_running = self.icon_theme.load_icon(name, 16, 0)
         
         # this isn't a gtk property, it's for extras to use
         for m in (self.menu_jobs, self.menu_edit, self.menu_help):
@@ -81,11 +78,15 @@ class JobsAdminUI:
         self.lst_jobs.clear()
         protect = not self.act_protected.props.active
         for jobname, job in self.jobservice.get_all_jobs(protect).iteritems():
-            mode = _("Auto") if job.automatic else _("Manual")
-            running_img = self.pb_running if job.running else None
-            service_weight = 700 if job.running else 400
-            self.lst_jobs.append((jobname, job.description, job.running,
-                    mode, running_img, service_weight, not job.protected))
+            weight = 700 if job.running else 400
+            if job.running:
+                markup = "<b>{0}</b>\n<small>{1}</small>"
+            else:
+                markup = "{0}\n<small>{1}</small>"
+            markup = markup.format(jobname, job.description)
+            # update these if the liststore changes structure
+            self.lst_jobs.append((jobname, markup, job.running,
+                                  job.automatic, not job.protected))
         self.lst_jobs.set_sort_column_id(0, gtk.SORT_ASCENDING)
         # put the cursor on something to trigger show_job_details
         self.tv_jobs.set_cursor(self.active_index)
@@ -113,6 +114,8 @@ class JobsAdminUI:
         self.act_job_settings.props.sensitive = job.settings and not job.protected
         self.act_job_start.props.sensitive = not job.running and not job.protected
         self.act_job_stop.props.sensitive = job.running and not job.protected
+        # auto/manual
+        #self.act_automatic.props.current_value = 0 if job.automatic else 1
         # backend type
         self.lbl_job_type.props.label = BACKEND_NAMES[job.backend] \
                 if job.backend in BACKEND_NAMES else _("Unknown")

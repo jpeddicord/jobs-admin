@@ -95,12 +95,12 @@ class SettingsDialog(gtk.Dialog):
                 value = str(int(widget.props.value))
             elif setting[1] == 'float':
                 value = str(widget.props.value)
-            elif setting[1] == 'str':
-                value = widget.props.text
             elif setting[1] == 'choice':
                 value = widget.get_model()[widget.props.active][0]
             elif setting[1] == 'file' or setting[1] == 'dir':
                 value = "unknown" #TODO
+            else: # str and unknowns
+                value = widget.props.text
             # only send it if changed
             if value != setting[3]:
                 newsettings[setting[0]] = value

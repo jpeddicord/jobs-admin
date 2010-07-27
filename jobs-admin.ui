@@ -6,16 +6,12 @@
     <columns>
       <!-- column-name service -->
       <column type="gchararray"/>
-      <!-- column-name description -->
+      <!-- column-name markup -->
       <column type="gchararray"/>
       <!-- column-name running -->
       <column type="gboolean"/>
-      <!-- column-name mode -->
-      <column type="gchararray"/>
-      <!-- column-name running_img -->
-      <column type="GdkPixbuf"/>
-      <!-- column-name service_weight -->
-      <column type="gint"/>
+      <!-- column-name automatic -->
+      <column type="gboolean"/>
       <!-- column-name sensitive -->
       <column type="gboolean"/>
     </columns>
@@ -42,8 +38,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_refresh">
                         <property name="visible">True</property>
-                        <property name="related_action">act_refresh</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_refresh</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -52,8 +48,8 @@
                       <object class="GtkCheckMenuItem" id="mi_protected">
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Show jobs that have been marked as essential to the operating system</property>
-                        <property name="related_action">act_protected</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_protected</property>
                       </object>
                     </child>
                     <child>
@@ -84,8 +80,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_start">
                         <property name="visible">True</property>
-                        <property name="related_action">act_job_start</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_job_start</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -93,8 +89,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_stop">
                         <property name="visible">True</property>
-                        <property name="related_action">act_job_stop</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_job_stop</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -105,32 +101,10 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkRadioMenuItem" id="mi_automatic">
-                        <property name="visible">True</property>
-                        <property name="related_action">act_auto</property>
-                        <property name="use_action_appearance">True</property>
-                        <property name="draw_as_radio">True</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkRadioMenuItem" id="mi_manual">
-                        <property name="visible">True</property>
-                        <property name="related_action">act_manual</property>
-                        <property name="use_action_appearance">True</property>
-                        <property name="draw_as_radio">True</property>
-                        <property name="group">mi_automatic</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
-                        <property name="visible">True</property>
-                      </object>
-                    </child>
-                    <child>
                       <object class="GtkMenuItem" id="mi_job_settings">
                         <property name="visible">True</property>
-                        <property name="related_action">act_job_settings</property>
                         <property name="use_action_appearance">True</property>
+                        <property name="related_action">act_job_settings</property>
                       </object>
                     </child>
                   </object>
@@ -164,85 +138,179 @@
           </packing>
         </child>
         <child>
-          <object class="GtkScrolledWindow" id="scrolledwindow1">
+          <object class="GtkHBox" id="hbox1">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
-            <property name="shadow_type">in</property>
             <child>
-              <object class="GtkTreeView" id="tv_jobs">
+              <object class="GtkScrolledWindow" id="scrolledwindow1">
+                <property name="width_request">300</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="model">lst_jobs</property>
-                <property name="rules_hint">True</property>
-                <property name="search_column">0</property>
-                <property name="show_expanders">False</property>
+                <property name="hscrollbar_policy">automatic</property>
+                <property name="vscrollbar_policy">automatic</property>
+                <property name="shadow_type">in</property>
                 <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn3">
-                    <property name="spacing">5</property>
-                    <property name="clickable">True</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort_column_id">2</property>
+                  <object class="GtkTreeView" id="tv_jobs">
+                    <property name="width_request">300</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="model">lst_jobs</property>
+                    <property name="rules_hint">True</property>
+                    <property name="search_column">0</property>
+                    <property name="show_expanders">False</property>
                     <child>
-                      <object class="GtkCellRendererPixbuf" id="cellrendererpixbuf1">
-                        <property name="xpad">5</property>
-                        <property name="stock_size">16</property>
+                      <object class="GtkTreeViewColumn" id="treeviewcolumn3">
+                        <property name="spacing">5</property>
+                        <property name="clickable">True</property>
+                        <property name="sort_column_id">3</property>
+                        <child>
+                          <object class="GtkCellRendererToggle" id="cellrenderertoggle1"/>
+                          <attributes>
+                            <attribute name="sensitive">4</attribute>
+                            <attribute name="active">3</attribute>
+                          </attributes>
+                        </child>
                       </object>
-                      <attributes>
-                        <attribute name="sensitive">6</attribute>
-                        <attribute name="pixbuf">4</attribute>
-                      </attributes>
                     </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn1">
-                    <property name="title">Service</property>
-                    <property name="clickable">True</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort_column_id">0</property>
                     <child>
-                      <object class="GtkCellRendererText" id="cellrenderertext1"/>
-                      <attributes>
-                        <attribute name="sensitive">6</attribute>
-                        <attribute name="text">0</attribute>
-                        <attribute name="weight">5</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn2">
-                    <property name="title">Description</property>
-                    <property name="clickable">True</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort_column_id">1</property>
-                    <child>
-                      <object class="GtkCellRendererText" id="cellrenderertext2"/>
-                      <attributes>
-                        <attribute name="sensitive">6</attribute>
-                        <attribute name="text">1</attribute>
-                      </attributes>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkTreeViewColumn" id="treeviewcolumn4">
-                    <property name="title">Mode</property>
-                    <property name="clickable">True</property>
-                    <property name="reorderable">True</property>
-                    <property name="sort_column_id">3</property>
-                    <child>
-                      <object class="GtkCellRendererText" id="cellrenderertext3"/>
-                      <attributes>
-                        <attribute name="sensitive">6</attribute>
-                        <attribute name="text">3</attribute>
-                      </attributes>
+                      <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                        <property name="title">Service</property>
+                        <property name="clickable">True</property>
+                        <property name="sort_column_id">0</property>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderertext1"/>
+                          <attributes>
+                            <attribute name="sensitive">4</attribute>
+                            <attribute name="markup">1</attribute>
+                          </attributes>
+                        </child>
+                      </object>
                     </child>
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkVBox" id="vbox2">
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkTable" id="table1">
+                    <property name="visible">True</property>
+                    <property name="border_width">5</property>
+                    <property name="n_rows">3</property>
+                    <property name="n_columns">2</property>
+                    <property name="column_spacing">5</property>
+                    <property name="row_spacing">2</property>
+                    <child>
+                      <object class="GtkLabel" id="lbl_job_type">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Unknown</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_job_starts">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Unknown</property>
+                        <property name="use_markup">True</property>
+                        <property name="selectable">True</property>
+                        <property name="ellipsize">end</property>
+                        <property name="track_visited_links">False</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="lbl_job_stops">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Unknown</property>
+                        <property name="use_markup">True</property>
+                        <property name="selectable">True</property>
+                        <property name="ellipsize">end</property>
+                        <property name="track_visited_links">False</property>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="right_attach">2</property>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label1">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Type</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="x_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label2">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Stops</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="top_attach">2</property>
+                        <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label4">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">Starts</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="top_attach">1</property>
+                        <property name="bottom_attach">2</property>
+                        <property name="x_options">GTK_FILL</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -295,104 +363,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkTable" id="table1">
-                <property name="visible">True</property>
-                <property name="n_rows">3</property>
-                <property name="n_columns">2</property>
-                <property name="column_spacing">5</property>
-                <property name="row_spacing">2</property>
-                <child>
-                  <object class="GtkLabel" id="lbl_job_type">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Unknown</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="lbl_job_starts">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Unknown</property>
-                    <property name="use_markup">True</property>
-                    <property name="selectable">True</property>
-                    <property name="ellipsize">end</property>
-                    <property name="track_visited_links">False</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="lbl_job_stops">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Unknown</property>
-                    <property name="use_markup">True</property>
-                    <property name="selectable">True</property>
-                    <property name="ellipsize">end</property>
-                    <property name="track_visited_links">False</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label1">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Type</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label2">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Stops</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="top_attach">2</property>
-                    <property name="bottom_attach">3</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkLabel" id="label4">
-                    <property name="visible">True</property>
-                    <property name="xalign">0</property>
-                    <property name="label" translatable="yes">Starts</property>
-                    <attributes>
-                      <attribute name="weight" value="bold"/>
-                    </attributes>
-                  </object>
-                  <packing>
-                    <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
@@ -403,10 +374,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="img_running">
-    <property name="visible">True</property>
-    <property name="icon_name">media-playback-start</property>
   </object>
   <object class="GtkImage" id="img_job_toggle">
     <property name="visible">True</property>
@@ -458,16 +425,5 @@
   <object class="GtkAction" id="act_refresh">
     <property name="label">_Refresh</property>
     <property name="stock_id">gtk-refresh</property>
-  </object>
-  <object class="GtkRadioAction" id="act_auto">
-    <property name="label">Automatic</property>
-    <property name="draw_as_radio">True</property>
-    <property name="value">1</property>
-    <property name="current_value">1</property>
-  </object>
-  <object class="GtkRadioAction" id="act_manual">
-    <property name="label">Manual</property>
-    <property name="draw_as_radio">True</property>
-    <property name="group">act_auto</property>
   </object>
 </interface>
