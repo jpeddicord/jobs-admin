@@ -66,6 +66,18 @@ class RemoteJob:
         retry(self._connect, call)
         self.props = {}
     
+    def enable(self, reply_handler=None, error_handler=None):
+        def call(): return self.interface.SetAutomatic(True, timeout=500,
+                reply_handler=reply_handler, error_handler=error_handler)
+        retry(self._connect, call)
+        self.props = {}
+    
+    def disable(self, reply_handler=None, error_handler=None):
+        def call(): return self.interface.SetAutomatic(False, timeout=500,
+                reply_handler=reply_handler, error_handler=error_handler)
+        retry(self._connect, call)
+        self.props = {}
+    
     def get_settings(self, reply_handler=None, error_handler=None):
         def call(): return self.interface.GetSettings(LANG, timeout=500,
                 reply_handler=reply_handler, error_handler=error_handler)

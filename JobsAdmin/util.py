@@ -6,9 +6,7 @@ LANG = getdefaultlocale()[0]
 
 
 def retry(connect, func):
-    """
-    Call a function, and re-try if there was a DBus connection issue.
-    """
+    """Call a function, and re-try if there was a DBus connection issue."""
     try:
         return func()
     except DBusException, e:

@@ -33,8 +33,7 @@ class JobsAdminUI:
         objects = [
             'win_main',
             'tv_jobs',
-            'btn_job_toggle',
-            'img_job_toggle',
+            'cr_auto',
             'lbl_job_type',
             'lbl_job_starts',
             'lbl_job_stops',
@@ -62,6 +61,8 @@ class JobsAdminUI:
         self.act_job_stop.connect('activate', self.job_toggle)
         self.act_refresh.connect('activate', self.load_jobs)
         self.act_protected.connect('activate', self.set_protected)
+        
+        self.cr_auto.connect('toggled', self.auto_toggle)
         
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
@@ -131,8 +132,22 @@ class JobsAdminUI:
         self.show_settings()
         # finally, tell our extras about the ui changes
         self.extras.update_ui()
+    
+    def auto_toggle(self, cr, path):
+        row = self.lst_jobs[int(path)]
+        job = self.jobservice.jobs[row[0]]
+        if job.protected:
+            return
+        self.set_waiting()
+        # FIXME: these should be async
+        if job.automatic:
+            job.disable()
+        else:
+            job.enable()
+        self.set_waiting(False)
+        self.load_jobs()
 
-    def job_toggle(self, button):
+    def job_toggle(self, button): #XXX: badly named in this context
         """Turn a job on or off."""
         self.set_waiting()
         # async callbacks so we don't appear to freeze
