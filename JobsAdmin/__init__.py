@@ -45,6 +45,7 @@ class JobsAdminUI:
             'menu_edit',
             'menu_help',
             'mi_quit',
+            'vbox_right',
             'frm_settings',
             'lst_jobs',
         ]
@@ -57,8 +58,8 @@ class JobsAdminUI:
         self.tv_jobs_sel = self.tv_jobs.get_selection()
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
         
-        self.act_job_start.connect('activate', self.job_toggle)
-        self.act_job_stop.connect('activate', self.job_toggle)
+        self.act_job_start.connect('activate', self.job_start)
+        self.act_job_stop.connect('activate', self.job_stop)
         self.act_refresh.connect('activate', self.load_jobs)
         self.act_protected.connect('activate', self.set_protected)
         
@@ -66,6 +67,8 @@ class JobsAdminUI:
         
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
+        
+        self.infobar = None
         
         # this isn't a gtk property, it's for extras to use
         for m in (self.menu_jobs, self.menu_edit, self.menu_help):
@@ -98,6 +101,7 @@ class JobsAdminUI:
     def show_job_info(self, treeview):
         """Update the UI with the currently selected job's info."""
         model, treeiter = self.tv_jobs_sel.get_selected()
+        oldindex = self.active_index
         self.active_index = self.tv_jobs_sel.get_selected_rows()[1][0][0]
         jobname = self.lst_jobs.get_value(treeiter, 0)
         self.active_job = job = self.jobservice.jobs[jobname]
@@ -133,6 +137,12 @@ class JobsAdminUI:
         if stopon: self.lbl_job_stops.props.label = ", ".join(stopon)
         # load settings
         self.show_settings()
+        # clear the infobar
+        # FIXME: this causes it to disappear when checking a box in a row that
+        # is not currently selected. could use idle_add, but there's probably
+        # a better solution out there.
+        if self.active_index != oldindex:
+            self.clear_infobar()
         # finally, tell our extras about the ui changes
         self.extras.update_ui()
     
@@ -149,19 +159,38 @@ class JobsAdminUI:
             job.enable()
         self.set_waiting(False)
         self.load_jobs()
+        # infobar
+        self.clear_infobar()
+        self.infobar = gtk.InfoBar()
+        self.infobar.props.message_type = gtk.MESSAGE_QUESTION
+        content = self.infobar.get_content_area()
+        self.vbox_right.pack_start(self.infobar, expand=False)
+        self.vbox_right.reorder_child(self.infobar, 0)
+        if job.automatic and not job.running:
+            lbl = gtk.Label(_("The job has been placed into automatic mode.\nWould you like to start it?"))
+            content.pack_start(lbl)
+            self.infobar.add_button(_("_Start"), gtk.RESPONSE_OK)
+            self.infobar.connect('response', self.job_start)
+        elif not job.automatic and job.running:
+            lbl = gtk.Label(_("The job has been placed into manual mode.\nWould you like to stop it?"))
+            content.pack_start(lbl)
+            self.infobar.add_button(_("S_top"), gtk.RESPONSE_OK)
+            self.infobar.connect('response', self.job_stop)
+        else:
+            self.clear_infobar()
+            return
+        self.infobar.show_all()
 
-    def job_toggle(self, button): #XXX: badly named in this context
-        """Turn a job on or off."""
+    def job_start(self, *args):
+        """Start a job."""
         self.set_waiting()
-        # async callbacks so we don't appear to freeze
         def reply():
             self.set_waiting(False)
+            self.clear_infobar()
             self.load_jobs()
         def error(e):
-            # ignore deniedbypolicy errors
             if not 'DeniedByPolicy' in e._dbus_error_name:
-                error = _("A problem has occurred:") + "\n\n\t{0}".format(
-                                e.get_dbus_message())
+                error = _("A problem has occurred:") + "\n\n\t{0}" + e.get_dbus_message()
                 if self.active_job.settings:
                     error += "\n\n" + _("Try changing the job settings and try again.")
                 dlg = gtk.MessageDialog(self.win_main, gtk.DIALOG_MODAL,
@@ -169,10 +198,20 @@ class JobsAdminUI:
                 dlg.run()
                 dlg.destroy()
             self.set_waiting(False)
-        if self.active_job.running:
-            self.active_job.stop(reply_handler=reply, error_handler=error)
-        else:
-            self.active_job.start(reply_handler=reply, error_handler=error)
+        self.active_job.start(reply_handler=reply, error_handler=error)
+    
+    def job_stop(self, *args):
+        """Stop a job."""
+        self.set_waiting()
+        def reply():
+            self.set_waiting(False)
+            self.clear_infobar()
+            self.load_jobs()
+        def error(e):
+            self.set_waiting(False)
+            if not 'DeniedByPolicy' in e._dbus_error_name:
+                raise e
+        self.active_job.stop(reply_handler=reply, error_handler=error)
     
     def show_settings(self):
         """Load the settings table for this job."""
@@ -185,7 +224,7 @@ class JobsAdminUI:
         hbb = gtk.HButtonBox()
         hbb.props.layout_style = gtk.BUTTONBOX_END
         save = gtk.Button(stock='gtk-apply') 
-        save.connect('clicked', self.apply_settings, tbl) #XXX causes cirular reference
+        save.connect('clicked', self.apply_settings, tbl)
         hbb.pack_start(save)
         row = tbl.props.n_rows
         tbl.attach(hbb, 0, 2, row, row + 1)
@@ -193,6 +232,7 @@ class JobsAdminUI:
         child = self.frm_settings.get_child()
         if child:
             self.frm_settings.remove(child)
+            child.destroy()
         self.frm_settings.add(tbl)
         self.frm_settings.show_all()
     
@@ -221,3 +261,8 @@ class JobsAdminUI:
             self.active_index += 1
         self.tv_jobs.set_cursor(self.active_index)
         return True
+    
+    def clear_infobar(self):
+        if self.infobar:
+            self.infobar.destroy()
+            self.infobar = None
