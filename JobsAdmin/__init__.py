@@ -195,7 +195,6 @@ class JobsAdminUI:
     
     def apply_settings(self, button, tbl):
         """Call on the supplied SettingsTable to save settings and reload."""
-        print "applying"
         tbl.apply_settings()
         self.load_jobs()
         

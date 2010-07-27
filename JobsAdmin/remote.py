@@ -27,7 +27,6 @@ class RemoteJobService:
                 self.jobs[job].protected = protected
         return self.jobs
     
-
 class RemoteJob:
     """
     A proxy object for a single job. DBus properties are accessible via
@@ -79,8 +78,13 @@ class RemoteJob:
         self.props = {}
     
     def get_settings(self, reply_handler=None, error_handler=None):
-        def call(): return self.interface.GetSettings(LANG, timeout=500,
+        if '_settings' in self.props:
+            return self.props['_settings']
+        def call():
+            self.props['_settings'] = self.interface.GetSettings(LANG,
+                timeout=500,
                 reply_handler=reply_handler, error_handler=error_handler)
+            return self.props['_settings']
         return retry(self._connect, call)
         
     def set_settings(self, settings, reply_handler=None, error_handler=None):
