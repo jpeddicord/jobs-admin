@@ -6,6 +6,7 @@ protected_jobs = [
     'acpi-support',
     'alsa-mixer-save',
     'anacron',
+    'apparmor',
     'atd',
     'binfmt-support',
     'brltty',
@@ -71,6 +72,7 @@ protected_jobs = [
     'urandom',
     'ureadahead',
     'ureadahead-other',
+    'x11-common',
 ]
 
 def is_protected(jobname):
