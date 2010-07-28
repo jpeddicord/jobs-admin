@@ -5,6 +5,7 @@ from dbus.exceptions import DBusException
 from JobsAdmin.extras import AllExtras
 from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.settings import SettingsTable
+from JobsAdmin.infobar import InfoManager
 
 BACKEND_NAMES = {
     'sysv': 'System V',
@@ -31,23 +32,25 @@ class JobsAdminUI:
             self.builder.add_from_file('/usr/share/jobs-admin/jobs-admin.ui')
         
         objects = [
-            'win_main',
-            'tv_jobs',
-            'cr_auto',
-            'lbl_job_type',
-            'lbl_job_starts',
-            'lbl_job_stops',
             'act_job_start',
             'act_job_stop',
-            'act_refresh',
             'act_protected',
-            'menu_jobs',
+            'act_refresh',
+            'cr_auto',
+            'frm_settings',
+            'lbl_job_mode',
+            'lbl_job_starts',
+            'lbl_job_status',
+            'lbl_job_stops',
+            'lbl_job_type',
+            'lst_jobs',
             'menu_edit',
             'menu_help',
+            'menu_jobs',
             'mi_quit',
+            'tv_jobs',
             'vbox_right',
-            'frm_settings',
-            'lst_jobs',
+            'win_main',
         ]
         for obj in objects:
             self.__dict__[obj] = self.builder.get_object(obj)
@@ -68,7 +71,7 @@ class JobsAdminUI:
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
         
-        self.infobar = None
+        self.infomanager = InfoManager(self.vbox_right)
         
         # this isn't a gtk property, it's for extras to use
         for m in (self.menu_jobs, self.menu_edit, self.menu_help):
@@ -101,7 +104,6 @@ class JobsAdminUI:
     def show_job_info(self, treeview):
         """Update the UI with the currently selected job's info."""
         model, treeiter = self.tv_jobs_sel.get_selected()
-        oldindex = self.active_index
         self.active_index = self.tv_jobs_sel.get_selected_rows()[1][0][0]
         jobname = self.lst_jobs.get_value(treeiter, 0)
         self.active_job = job = self.jobservice.jobs[jobname]
@@ -114,7 +116,7 @@ class JobsAdminUI:
         # starton/stopon vary slightly by backend
         starton = []
         stopon = []
-        if job.backend == 'sysv_stb':
+        if job.backend == 'sysv':
             if job.starton:
                 starton.append(_("on runlevels {list}").format(
                         list=", ".join(job.starton)))
@@ -135,18 +137,18 @@ class JobsAdminUI:
         self.lbl_job_stops.props.label = _("Unknown")
         if starton: self.lbl_job_starts.props.label = ", ".join(starton)
         if stopon: self.lbl_job_stops.props.label = ", ".join(stopon)
+        self.lbl_job_status.props.label = _("Running") if job.running else _("Not running")
+        self.lbl_job_mode.props.label = _("Automatic") if job.automatic else _("Manual")
         # load settings
         self.show_settings()
         # clear the infobar
-        # FIXME: this causes it to disappear when checking a box in a row that
-        # is not currently selected. could use idle_add, but there's probably
-        # a better solution out there.
-        if self.active_index != oldindex:
-            self.clear_infobar()
+        if self.active_index != self.infomanager.active_index:
+            self.infomanager.hide()
         # finally, tell our extras about the ui changes
         self.extras.update_ui()
     
     def auto_toggle(self, cr, path):
+        self.active_index = int(path)
         row = self.lst_jobs[int(path)]
         job = self.jobservice.jobs[row[0]]
         if job.protected:
@@ -160,33 +162,20 @@ class JobsAdminUI:
         self.set_waiting(False)
         self.load_jobs()
         # infobar
-        self.clear_infobar()
-        self.infobar = gtk.InfoBar()
-        self.infobar.props.message_type = gtk.MESSAGE_QUESTION
-        content = self.infobar.get_content_area()
-        self.vbox_right.pack_start(self.infobar, expand=False)
-        self.vbox_right.reorder_child(self.infobar, 0)
+        self.infomanager.hide()
         if job.automatic and not job.running:
-            lbl = gtk.Label(_("The job has been placed into automatic mode.\nWould you like to start it?"))
-            content.pack_start(lbl)
-            self.infobar.add_button(_("_Start"), gtk.RESPONSE_OK)
-            self.infobar.connect('response', self.job_start)
+            lbl = _("The job has been placed into automatic mode.\nWould you like to start it?")
+            self.infomanager.show(self.active_index, lbl, _("_Start"), self.job_start)
         elif not job.automatic and job.running:
-            lbl = gtk.Label(_("The job has been placed into manual mode.\nWould you like to stop it?"))
-            content.pack_start(lbl)
-            self.infobar.add_button(_("S_top"), gtk.RESPONSE_OK)
-            self.infobar.connect('response', self.job_stop)
-        else:
-            self.clear_infobar()
-            return
-        self.infobar.show_all()
+            lbl = _("The job has been placed into manual mode.\nWould you like to stop it?")
+            self.infomanager.show(self.active_index, lbl, _("S_top"), self.job_stop)
 
     def job_start(self, *args):
         """Start a job."""
         self.set_waiting()
         def reply():
             self.set_waiting(False)
-            self.clear_infobar()
+            self.infomanager.hide()
             self.load_jobs()
         def error(e):
             if not 'DeniedByPolicy' in e._dbus_error_name:
@@ -205,7 +194,7 @@ class JobsAdminUI:
         self.set_waiting()
         def reply():
             self.set_waiting(False)
-            self.clear_infobar()
+            self.infomanager.hide()
             self.load_jobs()
         def error(e):
             self.set_waiting(False)
@@ -261,8 +250,4 @@ class JobsAdminUI:
             self.active_index += 1
         self.tv_jobs.set_cursor(self.active_index)
         return True
-    
-    def clear_infobar(self):
-        if self.infobar:
-            self.infobar.destroy()
-            self.infobar = None
+
