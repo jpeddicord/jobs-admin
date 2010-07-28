@@ -83,7 +83,7 @@ class SettingsTable(gtk.Table):
         
         self.show_all()
             
-    def apply_settings(self, *args):
+    def apply_settings(self, reply, error):
         newsettings = {}
         for setting in self.settings:
             widget = self.widgets[setting[0]]
@@ -105,5 +105,6 @@ class SettingsTable(gtk.Table):
             # only send it if changed
             if value != setting[3]:
                 newsettings[setting[0]] = value
-        self.job.set_settings(newsettings)
+        self.job.set_settings(newsettings,
+                reply_handler=reply, error_handler=error)
 

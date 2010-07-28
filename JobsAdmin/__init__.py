@@ -154,21 +154,27 @@ class JobsAdminUI:
         if job.protected:
             return
         self.set_waiting()
-        # FIXME: these should be async
+        # handlers
+        def reply():
+            self.set_waiting(False)
+            self.load_jobs()
+            # infobar
+            self.infomanager.hide()
+            if job.automatic and not job.running:
+                lbl = _("The job has been placed into automatic mode.\nWould you like to start it?")
+                self.infomanager.show(self.active_index, lbl, _("_Start"), self.job_start)
+            elif not job.automatic and job.running:
+                lbl = _("The job has been placed into manual mode.\nWould you like to stop it?")
+                self.infomanager.show(self.active_index, lbl, _("S_top"), self.job_stop)
+        def error(e):
+            self.set_waiting(False)
+            if not 'DeniedByPolicy' in e._dbus_error_name:
+                raise e
+        # async call
         if job.automatic:
-            job.disable()
+            job.disable(reply_handler=reply, error_handler=error)
         else:
-            job.enable()
-        self.set_waiting(False)
-        self.load_jobs()
-        # infobar
-        self.infomanager.hide()
-        if job.automatic and not job.running:
-            lbl = _("The job has been placed into automatic mode.\nWould you like to start it?")
-            self.infomanager.show(self.active_index, lbl, _("_Start"), self.job_start)
-        elif not job.automatic and job.running:
-            lbl = _("The job has been placed into manual mode.\nWould you like to stop it?")
-            self.infomanager.show(self.active_index, lbl, _("S_top"), self.job_stop)
+            job.enable(reply_handler=reply, error_handler=error)
 
     def job_start(self, *args):
         """Start a job."""
@@ -227,8 +233,15 @@ class JobsAdminUI:
     
     def apply_settings(self, button, tbl):
         """Call on the supplied SettingsTable to save settings and reload."""
-        tbl.apply_settings()
-        self.load_jobs()
+        self.set_waiting()
+        def reply():
+            self.set_waiting(False)
+            self.load_jobs()
+        def error(e):
+            self.set_waiting(False)
+            if not 'DeniedByPolicy' in e._dbus_error_name:
+                raise e
+        tbl.apply_settings(reply, error)
         
     def set_waiting(self, waiting=True):
         """Disable the UI or re-enable it for an action."""
