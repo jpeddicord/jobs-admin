@@ -63,6 +63,7 @@ class JobsAdminUI:
             'menu_edit',
             'menu_help',
             'menu_jobs',
+            'mi_about',
             'mi_quit',
             'tv_jobs',
             'vbox_right',
@@ -76,13 +77,13 @@ class JobsAdminUI:
         
         self.tv_jobs_sel = self.tv_jobs.get_selection()
         self.tv_jobs.connect('cursor-changed', self.show_job_info)
+        self.cr_auto.connect('toggled', self.auto_toggle)
         
         self.act_job_start.connect('activate', self.job_start)
         self.act_job_stop.connect('activate', self.job_stop)
         self.act_refresh.connect('activate', self.load_jobs)
         self.act_protected.connect('activate', self.set_protected)
-        
-        self.cr_auto.connect('toggled', self.auto_toggle)
+        self.mi_about.connect('activate', self.show_about)
         
         self.lbl_job_starts.connect('activate-link', self.link_clicked)
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
@@ -273,6 +274,18 @@ class JobsAdminUI:
         self.win_main.get_window().set_cursor(cursor)
         for obj in self.win_main.get_children():
             obj.props.sensitive = not waiting
+        
+    def show_about(self, *args):
+        dlg = gtk.AboutDialog()
+        dlg.props.name = "jobs-admin"
+        dlg.props.website = "https://launchpad.net/jobsadmin"
+        try:
+            from JobsAdmin.info import version, description
+            dlg.props.version = version
+            dlg.props.comments = description
+        except: pass
+        dlg.run()
+        dlg.destroy()
     
     def set_protected(self, action):
         self.active_index = 0
