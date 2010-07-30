@@ -36,6 +36,7 @@ class JobsAdminUI:
         self.jobservice = RemoteJobService()
         self.active_job = None
         self.active_index = 0
+        self.waiting = False
         self.builder = gtk.Builder()
         
         # https://bugzilla.gnome.org/show_bug.cgi?id=574520
@@ -113,11 +114,16 @@ class JobsAdminUI:
             self.lst_jobs.append((jobname, markup, job.running,
                                   job.automatic, not job.protected))
         self.lst_jobs.set_sort_column_id(0, gtk.SORT_ASCENDING)
-        # put the cursor on something to trigger show_job_details
+        # put the cursor on something to trigger show_job_info
         self.tv_jobs.set_cursor(self.active_index)
     
-    def show_job_info(self, treeview):
+    def show_job_info(self, *args):
         """Update the UI with the currently selected job's info."""
+        # we can't call on dbus while an async call is active, otherwise
+        # this will block. also don't want to change active_index while
+        # async calls are depending on it
+        if self.waiting:
+            return
         model, treeiter = self.tv_jobs_sel.get_selected()
         self.active_index = self.tv_jobs_sel.get_selected_rows()[1][0][0]
         jobname = self.lst_jobs.get_value(treeiter, 0)
@@ -173,6 +179,7 @@ class JobsAdminUI:
         def reply():
             self.set_waiting(False)
             self.load_jobs()
+            self.show_job_info()
             # infobar
             self.infomanager.hide()
             if job.automatic and not job.running:
@@ -183,6 +190,7 @@ class JobsAdminUI:
                 self.infomanager.show(self.active_index, lbl, _("S_top"), self.job_stop)
         def error(e):
             self.set_waiting(False)
+            self.show_job_info()
             if not 'DeniedByPolicy' in e._dbus_error_name:
                 raise e
         # async call
@@ -260,6 +268,7 @@ class JobsAdminUI:
         
     def set_waiting(self, waiting=True):
         """Disable the UI or re-enable it for an action."""
+        self.waiting = waiting
         cursor = gtk.gdk.Cursor(gtk.gdk.WATCH if waiting else gtk.gdk.ARROW)
         self.win_main.get_window().set_cursor(cursor)
         for obj in self.win_main.get_children():
