@@ -232,6 +232,11 @@ class JobsAdminUI:
                 raise e
         self.active_job.stop(reply_handler=reply, error_handler=error)
     
+    def job_restart(self, *args):
+        """Stop a job, then start it again."""
+        self.job_stop()
+        self.job_start()
+    
     def show_settings(self):
         """Load the settings table for this job."""
         # only show for non-protected jobs with published settings
@@ -261,6 +266,11 @@ class JobsAdminUI:
         def reply():
             self.set_waiting(False)
             self.load_jobs()
+            # infobar
+            self.infomanager.hide()
+            if self.active_job.running:
+                lbl = _("The settings have been saved.\nRestart the job to apply these changes.")
+                self.infomanager.show(self.active_index, lbl, _("_Restart"), self.job_restart)
         def error(e):
             self.set_waiting(False)
             if not 'DeniedByPolicy' in e._dbus_error_name:
