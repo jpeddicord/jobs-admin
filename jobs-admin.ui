@@ -38,8 +38,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_refresh">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_refresh</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -48,8 +48,8 @@
                       <object class="GtkCheckMenuItem" id="mi_protected">
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Show jobs that have been marked as essential to the operating system</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_protected</property>
+                        <property name="use_action_appearance">True</property>
                       </object>
                     </child>
                     <child>
@@ -80,8 +80,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_start">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_job_start</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -89,8 +89,8 @@
                     <child>
                       <object class="GtkImageMenuItem" id="mi_job_stop">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">True</property>
                         <property name="related_action">act_job_stop</property>
+                        <property name="use_action_appearance">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
@@ -213,7 +213,6 @@
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Unknown</property>
                         <property name="use_markup">True</property>
-                        <property name="selectable">True</property>
                         <property name="ellipsize">end</property>
                         <property name="track_visited_links">False</property>
                       </object>
@@ -230,7 +229,6 @@
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Unknown</property>
                         <property name="use_markup">True</property>
-                        <property name="selectable">True</property>
                         <property name="ellipsize">end</property>
                         <property name="track_visited_links">False</property>
                       </object>
@@ -319,10 +317,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Unknown</property>
-                        <property name="use_markup">True</property>
-                        <property name="selectable">True</property>
                         <property name="ellipsize">end</property>
-                        <property name="track_visited_links">False</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -336,10 +331,7 @@
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Unknown</property>
-                        <property name="use_markup">True</property>
-                        <property name="selectable">True</property>
                         <property name="ellipsize">end</property>
-                        <property name="track_visited_links">False</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
