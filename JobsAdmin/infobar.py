@@ -33,7 +33,7 @@ class InfoManager:
         self.ib.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         if button:
             self.ib.add_button(button, gtk.RESPONSE_OK)
-            self.ib.connect('response', self._callback, callback)
+        self.ib.connect('response', self._callback, callback)
         self.ib.props.message_type = msgtype
         # pack and show
         self.container.pack_start(self.ib, expand=False)

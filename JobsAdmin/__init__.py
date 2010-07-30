@@ -215,7 +215,7 @@ class JobsAdminUI:
                 lbl = _("A problem has occurred:") + "\n\t" + e.get_dbus_message()
                 if self.active_job.settings:
                     lbl += "\n" + _("Try changing the job settings and try again.")
-                self.infomanager.show(self.active_index, lbl, msgtype=gtk.MESSAGE_ERROR)
+                self.infomanager.show(self.active_index, lbl, msgtype=gtk.MESSAGE_WARNING)
             self.set_waiting(False)
         self.active_job.start(reply_handler=reply, error_handler=error)
     
