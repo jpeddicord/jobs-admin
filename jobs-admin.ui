@@ -18,8 +18,8 @@
   </object>
   <object class="GtkWindow" id="win_main">
     <property name="title" translatable="yes">System Job Administration</property>
-    <property name="default_width">700</property>
-    <property name="default_height">400</property>
+    <property name="default_width">750</property>
+    <property name="default_height">450</property>
     <property name="icon_name">system-run</property>
     <child>
       <object class="GtkVBox" id="vbox1">
