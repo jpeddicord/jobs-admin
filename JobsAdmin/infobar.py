@@ -30,8 +30,9 @@ class InfoManager:
         self.ib = gtk.InfoBar()
         self.active_index = index
         self.ib.get_content_area().pack_start(gtk.Label(text))
+        self.ib.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         self.ib.add_button(button, gtk.RESPONSE_OK)
-        self.ib.connect('response', callback)
+        self.ib.connect('response', self._callback, callback)
         self.ib.props.message_type = msgtype
         # pack and show
         self.container.pack_start(self.ib, expand=False)
@@ -42,4 +43,9 @@ class InfoManager:
         if self.ib:
             self.active_index = None
             self.ib.destroy()
-        
+    
+    def _callback(self, ib, response, callback):
+        if response == gtk.RESPONSE_OK:
+            return callback()
+        self.hide()
+

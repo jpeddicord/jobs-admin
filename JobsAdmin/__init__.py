@@ -21,6 +21,7 @@ from JobsAdmin.extras import AllExtras
 from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.settings import SettingsTable
 from JobsAdmin.infobar import InfoManager
+from JobsAdmin.context import ContextMenu
 
 BACKEND_NAMES = {
     'sysv': 'System V',
@@ -89,6 +90,8 @@ class JobsAdminUI:
         self.lbl_job_stops.connect('activate-link', self.link_clicked)
         
         self.infomanager = InfoManager(self.vbox_right)
+        self.context = ContextMenu(self.act_job_start, self.act_job_stop)
+        self.tv_jobs.connect('button-press-event', self.context.popup)
         
         # this isn't a gtk property, it's for extras to use
         for m in (self.menu_jobs, self.menu_edit, self.menu_help):
