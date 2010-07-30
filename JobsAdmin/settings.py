@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
+from pwd import getpwall
+from grp import getgrall
 import gtk
 
 
@@ -67,11 +69,41 @@ class SettingsTable(gtk.Table):
                         widget.props.active = index
                     index += 1
             
-            elif stype == 'file':
-                widget = gtk.FileChooserButton("Choose a file")
+            elif stype == 'file' or stype == 'dir':
+                # gtk file choosers don't work well for non-existent files
+                if 'exist' in constrs and constrs['exists'] == 'false':
+                    widget = gtk.Entry()
+                    widget.props.text = val
+                else:
+                    if stype == 'file':
+                        widget = gtk.FileChooserButton("Choose a file")
+                        widget.props.action = gtk.FILE_CHOOSER_ACTION_OPEN
+                    else:
+                        widget = gtk.FileChooserButton("Choose a folder")
+                        widget.props.action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER
+                    widget.set_filename(val)
             
-            elif stype == 'dir':
-                widget = gtk.FileChooserButton("Choose a folder")
+            elif stype == 'user' or stype == 'group':
+                lst = gtk.ListStore(int, str)
+                widget = gtk.ComboBox(lst)
+                cell = gtk.CellRendererText()
+                widget.pack_start(cell)
+                widget.add_attribute(cell, 'text', 1)
+                index = 0
+                if stype == 'user':
+                    for u in sorted(getpwall()):
+                        lst.append((u.pw_uid, u.pw_name))
+                        # user names & ids will never clash
+                        if val == str(u.pw_uid) or val == u.pw_name:
+                            widget.props.active = index
+                        index += 1
+                else:
+                    for g in sorted(getgrall()):
+                        lst.append((g.gr_gid, g.gr_name))
+                        # same as above w/ users
+                        if val == str(g.gr_gid) or val == g.gr_name:
+                            widget.props.active = index
+                        index += 1
             
             elif stype == 'label':
                 widget = gtk.Label()
@@ -88,7 +120,7 @@ class SettingsTable(gtk.Table):
                 self.attach(widget, 0, 2, row, row + 1)
             # but the others don't; let's add them
             else:
-                lbl = gtk.Label("{0}:".format(desc))
+                lbl = gtk.Label(desc + ":")
                 lbl.props.xalign = 0
                 self.attach(lbl, 0, 1, row, row + 1)
                 self.attach(widget, 1, 2, row, row + 1)
@@ -106,20 +138,32 @@ class SettingsTable(gtk.Table):
             if setting[1] == 'bool':
                 value = 'true' if widget.props.active else 'false'
             elif setting[1] == 'int':
-                value = str(int(widget.props.value))
+                value = int(widget.props.value)
             elif setting[1] == 'float':
-                value = str(widget.props.value)
+                value = widget.props.value
             elif setting[1] == 'choice':
                 value = widget.get_model()[widget.props.active][0]
             elif setting[1] == 'file' or setting[1] == 'dir':
-                value = "unknown" #TODO
+                if 'exist' in setting[5] and setting[5]['exist'] == 'false':
+                    value = widget.props.text
+                else:
+                    value = widget.get_filename()
+                    if value == None:
+                        value = ''
+            elif setting[1] == 'user' or setting[1] == 'group':
+                row = widget.get_model()[widget.props.active]
+                print row
+                if 'useid' in setting[5] and setting[5]['useid'] == 'true':
+                    value = row[0]
+                else:
+                    value = row[1]
             elif setting[1] == 'label':
                 continue
             else: # str and unknowns
                 value = widget.props.text
             # only send it if changed
             if value != setting[3]:
-                newsettings[setting[0]] = value
+                newsettings[setting[0]] = str(value)
         self.job.set_settings(newsettings,
-                reply_handler=reply, error_handler=error)
+                              reply_handler=reply, error_handler=error)
 
