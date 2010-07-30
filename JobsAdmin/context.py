@@ -27,4 +27,5 @@ class ContextMenu(gtk.Menu):
         self.add(mi_stop)
     
     def popup(self, widget, event):
-        gtk.Menu.popup(self, None, None, None, event.button, event.time)
+        if event.button == 3:
+            gtk.Menu.popup(self, None, None, None, event.button, event.time)
