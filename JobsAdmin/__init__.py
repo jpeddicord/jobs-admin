@@ -200,7 +200,7 @@ class JobsAdminUI:
             self.load_jobs()
         def error(e):
             if not 'DeniedByPolicy' in e._dbus_error_name:
-                error = _("A problem has occurred:") + "\n\n\t{0}" + e.get_dbus_message()
+                error = _("A problem has occurred:") + "\n\n\t" + e.get_dbus_message()
                 if self.active_job.settings:
                     error += "\n\n" + _("Try changing the job settings and try again.")
                 dlg = gtk.MessageDialog(self.win_main, gtk.DIALOG_MODAL,

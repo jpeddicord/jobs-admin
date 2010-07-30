@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
+from subprocess import Popen
 from pwd import getpwall
 from grp import getgrall
 import gtk
@@ -105,6 +106,18 @@ class SettingsTable(gtk.Table):
                             widget.props.active = index
                         index += 1
             
+            elif stype == 'exec' or stype == 'open':
+                if stype == 'exec':
+                    widget = gtk.Button(_("_Launch"))
+                    widget.connect('clicked', run_action, val, False)
+                    p = Popen(['which', val.split()[0]])
+                    if p.wait() != 0:
+                        widget.props.sensitive = False
+                        widget.props.label = _("Unavailable")
+                else:
+                    widget = gtk.Button(_("_Open"))
+                    widget.connect('clicked', run_action, val, True)
+            
             elif stype == 'label':
                 widget = gtk.Label()
                 widget.props.xalign = 0
@@ -157,7 +170,7 @@ class SettingsTable(gtk.Table):
                     value = row[0]
                 else:
                     value = row[1]
-            elif setting[1] == 'label':
+            elif setting[1] == 'label' or setting[1] == 'exec' or setting[1] == 'open':
                 continue
             else: # str and unknowns
                 value = widget.props.text
@@ -167,3 +180,11 @@ class SettingsTable(gtk.Table):
         self.job.set_settings(newsettings,
                               reply_handler=reply, error_handler=error)
 
+
+def run_action(button, action, xdg):
+    """Run "action", using xdg-open if xdg is True."""
+    if xdg:
+        run = 'xdg-open ' + action
+    else:
+        run = action
+    Popen(run, shell=True)
