@@ -2,4 +2,3 @@
 JobsAdmin/__init__.py
 JobsAdmin/settings.py
 JobsAdmin/extras/apportreport.py
-JobsAdmin/extras/pkit.py

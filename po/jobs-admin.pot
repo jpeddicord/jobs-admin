@@ -8,20 +8,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-07-13 23:09-0400\n"
+"POT-Creation-Date: 2010-08-02 15:15-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../jobs-admin.ui.h:1
-msgid "Job Se_ttings..."
+msgid "Job Settings"
 msgstr ""
 
 #: ../jobs-admin.ui.h:2
-msgid "Show _Protected Jobs"
+msgid "Mode"
 msgstr ""
 
 #: ../jobs-admin.ui.h:3
@@ -29,11 +30,11 @@ msgid "Show jobs that have been marked as essential to the operating system"
 msgstr ""
 
 #: ../jobs-admin.ui.h:4
-msgid "St_op"
+msgid "Starts"
 msgstr ""
 
 #: ../jobs-admin.ui.h:5
-msgid "Starts"
+msgid "Status"
 msgstr ""
 
 #: ../jobs-admin.ui.h:6
@@ -49,8 +50,8 @@ msgid "Type"
 msgstr ""
 
 #. backend type
-#: ../jobs-admin.ui.h:9 ../JobsAdmin/__init__.py:117
-#: ../JobsAdmin/__init__.py:138 ../JobsAdmin/__init__.py:139
+#: ../jobs-admin.ui.h:9 ../JobsAdmin/__init__.py:140
+#: ../JobsAdmin/__init__.py:161 ../JobsAdmin/__init__.py:162
 msgid "Unknown"
 msgstr ""
 
@@ -66,50 +67,80 @@ msgstr ""
 msgid "_Jobs"
 msgstr ""
 
-#: ../jobs-admin.ui.h:13 ../JobsAdmin/__init__.py:109
-msgid "_Start"
-msgstr ""
-
-#: ../jobs-admin.ui.h:14
-msgid "jobs-admin on Launchpad"
-msgstr ""
-
-#: ../JobsAdmin/__init__.py:83
-msgid "Auto"
-msgstr ""
-
-#: ../JobsAdmin/__init__.py:83
-msgid "Manual"
-msgstr ""
-
-#: ../JobsAdmin/__init__.py:104
-msgid "_Stop"
-msgstr ""
-
-#: ../JobsAdmin/__init__.py:123 ../JobsAdmin/__init__.py:126
+#: ../JobsAdmin/__init__.py:146 ../JobsAdmin/__init__.py:149
 msgid "on runlevels {list}"
 msgstr ""
 
-#: ../JobsAdmin/__init__.py:157
+#: ../JobsAdmin/__init__.py:165
+msgid "Running"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:165
+msgid "Not running"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:166
+msgid "Automatic"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:166
+msgid "Manual"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:190
+msgid ""
+"The job has been placed into automatic mode.\n"
+"Would you like to start it?"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:191
+msgid "_Start"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:193
+msgid ""
+"The job has been placed into manual mode.\n"
+"Would you like to stop it?"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:194
+msgid "S_top"
+msgstr ""
+
+#: ../JobsAdmin/__init__.py:215
 msgid "A problem has occurred:"
 msgstr ""
 
-#: ../JobsAdmin/__init__.py:160
+#: ../JobsAdmin/__init__.py:217
 msgid "Try changing the job settings and try again."
 msgstr ""
 
-#: ../JobsAdmin/settings.py:8
-msgid "Job Settings"
+#: ../JobsAdmin/__init__.py:272
+msgid ""
+"The settings have been saved.\n"
+"Restart the job to apply these changes."
 msgstr ""
 
-#: ../JobsAdmin/extras/apportreport.py:15
-msgid "Report Service Problem"
+#: ../JobsAdmin/__init__.py:273
+msgid "_Restart"
+msgstr ""
+
+#: ../JobsAdmin/settings.py:110
+msgid "_Launch"
+msgstr ""
+
+#: ../JobsAdmin/settings.py:115
+msgid "Unavailable"
 msgstr ""
 
 #: ../JobsAdmin/extras/apportreport.py:30
+msgid "Report Service Problem"
+msgstr ""
+
+#: ../JobsAdmin/extras/apportreport.py:45
 msgid "Report a problem with {service}?"
 msgstr ""
 
-#: ../JobsAdmin/extras/apportreport.py:41
+#: ../JobsAdmin/extras/apportreport.py:56
 msgid "Privileges are required to report this process."
 msgstr ""
