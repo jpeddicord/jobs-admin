@@ -106,17 +106,13 @@ class SettingsTable(gtk.Table):
                             widget.props.active = index
                         index += 1
             
-            elif stype == 'exec' or stype == 'open':
-                if stype == 'exec':
-                    widget = gtk.Button(_("_Launch"))
-                    widget.connect('clicked', run_action, val, False)
-                    p = Popen(['which', val.split()[0]])
-                    if p.wait() != 0:
-                        widget.props.sensitive = False
-                        widget.props.label = _("Unavailable")
-                else:
-                    widget = gtk.Button(_("_Open"))
-                    widget.connect('clicked', run_action, val, True)
+            elif stype == 'exec':
+                widget = gtk.Button(_("_Launch"))
+                widget.connect('clicked', run_action, val)
+                p = Popen(['which', val.split()[0]])
+                if p.wait() != 0:
+                    widget.props.sensitive = False
+                    widget.props.label = _("Unavailable")
             
             elif stype == 'label':
                 widget = gtk.Label()
@@ -165,7 +161,6 @@ class SettingsTable(gtk.Table):
                         value = ''
             elif setting[1] == 'user' or setting[1] == 'group':
                 row = widget.get_model()[widget.props.active]
-                print row
                 if 'useid' in setting[5] and setting[5]['useid'] == 'true':
                     value = row[0]
                 else:
@@ -181,10 +176,5 @@ class SettingsTable(gtk.Table):
                               reply_handler=reply, error_handler=error)
 
 
-def run_action(button, action, xdg):
-    """Run "action", using xdg-open if xdg is True."""
-    if xdg:
-        run = 'xdg-open ' + action
-    else:
-        run = action
-    Popen(run, shell=True)
+def run_action(button, action):
+    Popen(action, shell=True)
