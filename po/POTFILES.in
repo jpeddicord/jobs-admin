@@ -1,4 +1,5 @@
 [type: gettext/glade] jobs-admin.ui
 JobsAdmin/__init__.py
+JobsAdmin/overrides.py
 JobsAdmin/settings.py
 JobsAdmin/extras/apportreport.py
