@@ -247,11 +247,15 @@ class JobsAdminUI:
         # apply button
         hbb = gtk.HButtonBox()
         hbb.props.layout_style = gtk.BUTTONBOX_END
-        save = gtk.Button(stock='gtk-apply') 
+        save = gtk.Button(stock='gtk-apply')
         save.connect('clicked', self.apply_settings, tbl)
         hbb.pack_start(save)
         row = tbl.props.n_rows
         tbl.attach(hbb, 0, 2, row, row + 1)
+        # only enable apply button when settings have been activated
+        save.props.sensitive = False
+        for w in tbl:
+            w.connect('focus-in-event', self.enable_settings_apply, save)
         # remove the old table if present
         child = self.frm_settings.get_child()
         if child:
@@ -259,6 +263,12 @@ class JobsAdminUI:
             child.destroy()
         self.frm_settings.add(tbl)
         self.frm_settings.show_all()
+    
+    def enable_settings_apply(self, widget, event, save):
+        """Enable the Apply button. Signal callback for 'focus'."""
+        save.props.sensitive = True
+        save.props.can_default = True
+        save.props.has_default = True
     
     def apply_settings(self, button, tbl):
         """Call on the supplied SettingsTable to save settings and reload."""
