@@ -18,6 +18,7 @@ from subprocess import Popen
 from pwd import getpwall
 from grp import getgrall
 import gtk
+from JobsAdmin.util import check_exec
 
 
 class SettingsTable(gtk.Table):
@@ -116,8 +117,7 @@ class SettingsTable(gtk.Table):
                 if val:
                     # check for existence
                     check = val.split()[0]
-                    p = Popen(['which', check])
-                    if p.wait() != 0:
+                    if not check_exec(check):
                         widget.props.sensitive = False
                         missing = check
                     else:
@@ -129,7 +129,7 @@ class SettingsTable(gtk.Table):
                         # check to see if it exists
                         check = vname.split()[0]
                         p = Popen(['which', check])
-                        if p.wait() != 0:
+                        if not check_exec(check):
                             missing = check
                             continue
                         # take the first valid action
@@ -210,7 +210,7 @@ class SettingsTable(gtk.Table):
     
     def show_warnings(self):
         text = _("Some settings are not available:")
-        text += "\n" + "\n\t".join(self.warnings)
+        text += "\n" + "\n".join(self.warnings)
         self.infomanager.show(self.index, text, msgtype=gtk.MESSAGE_WARNING)
 
 

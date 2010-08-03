@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
+from subprocess import Popen, PIPE
 from locale import getdefaultlocale
 from dbus.exceptions import DBusException
 
@@ -30,3 +31,6 @@ def retry(connect, func):
         connect()
         return func()
 
+def check_exec(check):
+    p = Popen(['which', check], stdout=PIPE)
+    return (p.wait() == 0)
