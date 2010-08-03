@@ -107,13 +107,28 @@ class SettingsTable(gtk.Table):
                         index += 1
             
             elif stype == 'exec':
-                widget = gtk.Button(_("_Launch"))
-                widget.connect('clicked', run_action, val)
-                p = Popen(['which', val.split()[0]])
-                if p.wait() != 0:
-                    widget.props.sensitive = False
-                    widget.props.label = _("Unavailable")
-            
+                widget = gtk.Button(_("_Unavailable"))
+                # static value
+                if val:
+                    # check for existence
+                    p = Popen(['which', val.split()[0]])
+                    if p.wait() != 0:
+                        widget.props.sensitive = False
+                    else:
+                        widget.connect('clicked', run_action, val)
+                        widget.props.label = _("Launch")
+                # fallback list
+                else:
+                    for vname, vdesc in vals:
+                        # check to see if it exists
+                        p = Popen(['which', vname.split()[0]])
+                        if p.wait() != 0:
+                            continue
+                        # take the first valid action
+                        widget.connect('clicked', run_action, vname)
+                        widget.props.label = vdesc
+                        break
+                        
             elif stype == 'label':
                 widget = gtk.Label()
                 widget.props.xalign = 0
