@@ -15,7 +15,7 @@
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
 from dbus import SystemBus, Interface, PROPERTIES_IFACE
-from JobsAdmin.protected import is_protected
+from JobsAdmin.overrides import is_protected, alt_description
 from JobsAdmin.util import LANG, retry
 
 
@@ -66,6 +66,11 @@ class RemoteJob:
                 self.props = self.obj.GetAll('com.ubuntu.JobService.Job',
                         dbus_interface=PROPERTIES_IFACE)
             retry(self._connect, call)
+        # override description
+        if name == 'description':
+            alt = alt_description(self.name)
+            if alt:
+                return alt
         return self.props[name]
     
     def start(self, reply_handler=None, error_handler=None):

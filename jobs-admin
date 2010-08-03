@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
-from dbus.mainloop.glib import DBusGMainLoop
-from JobsAdmin import JobsAdminUI
-
 # i18n
 import locale
 import gettext
 locale.setlocale(locale.LC_ALL, '')
 gettext.install('jobs-admin', '/usr/share/locale', unicode=True)
+
+import gtk
+from dbus.mainloop.glib import DBusGMainLoop
+from JobsAdmin import JobsAdminUI
 
 DBusGMainLoop(set_as_default=True)
 

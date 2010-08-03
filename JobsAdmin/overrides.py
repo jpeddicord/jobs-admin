@@ -1,7 +1,17 @@
 
+# workaround for services that don't provide very friendly descriptions
+_alt_descriptions = {
+    'apport': _('Crash Reporting'),
+    'avahi-daemon': _("Service Discovery"),
+    'bluetooth': _("Bluetooth"),
+    'cups': _("Printing"),
+    'kerneloops': _("Kernel Crash Handler"),
+    'networking': _("Manual Networking"),
+    'pulseaudio': _("PulseAudio"),
+}
 
 # these services should not be managed by us
-protected_jobs = [
+_protected_jobs = [
     'acpid',
     'acpi-support',
     'alsa-mixer-save',
@@ -76,4 +86,10 @@ protected_jobs = [
 ]
 
 def is_protected(jobname):
-    return jobname in protected_jobs
+    return jobname in _protected_jobs
+
+def alt_description(jobname):
+    if jobname in _alt_descriptions:
+        return _alt_descriptions[jobname]
+    else:
+        return None
