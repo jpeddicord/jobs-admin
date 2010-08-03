@@ -22,10 +22,13 @@ import gtk
 
 class SettingsTable(gtk.Table):
     
-    def __init__(self, job):
+    def __init__(self, job, index, infomanager):
         self.job = job
+        self.index = index
+        self.infomanager = infomanager
         self.settings = job.get_settings()
         self.widgets = {}
+        self.warnings = []
         gtk.Table.__init__(self, len(self.settings) + 1, 2)
         self.props.row_spacing = 5
         self.props.column_spacing = 10
@@ -108,12 +111,15 @@ class SettingsTable(gtk.Table):
             
             elif stype == 'exec':
                 widget = gtk.Button(_("_Unavailable"))
+                missing = None
                 # static value
                 if val:
                     # check for existence
-                    p = Popen(['which', val.split()[0]])
+                    check = val.split()[0]
+                    p = Popen(['which', check])
                     if p.wait() != 0:
                         widget.props.sensitive = False
+                        missing = check
                     else:
                         widget.connect('clicked', run_action, val)
                         widget.props.label = _("Launch")
@@ -121,13 +127,22 @@ class SettingsTable(gtk.Table):
                 else:
                     for vname, vdesc in vals:
                         # check to see if it exists
-                        p = Popen(['which', vname.split()[0]])
+                        check = vname.split()[0]
+                        p = Popen(['which', check])
                         if p.wait() != 0:
+                            missing = check
                             continue
                         # take the first valid action
                         widget.connect('clicked', run_action, vname)
                         widget.props.label = vdesc
+                        missing = None
                         break
+                if missing:
+                    # this is temporary until we can properly search packages.
+                    self.warnings.append(
+                        _("An application is not installed. {search_link}").format(
+                            search_link="<a href=\"http://packages.ubuntu.com/search?searchon=contents&amp;mode=exactfilename&amp;keywords={0}\">{1}</a>".format(
+                                check, _("Search online"))))
                         
             elif stype == 'label':
                 widget = gtk.Label()
@@ -153,6 +168,9 @@ class SettingsTable(gtk.Table):
             self.widgets[name] = widget
         
         self.show_all()
+        
+        if self.warnings:
+            self.show_warnings()
             
     def apply_settings(self, reply, error):
         newsettings = {}
@@ -189,6 +207,11 @@ class SettingsTable(gtk.Table):
                 newsettings[setting[0]] = str(value)
         self.job.set_settings(newsettings,
                               reply_handler=reply, error_handler=error)
+    
+    def show_warnings(self):
+        text = _("Some settings are not available:")
+        text += "\n" + "\n\t".join(self.warnings)
+        self.infomanager.show(self.index, text, msgtype=gtk.MESSAGE_WARNING)
 
 
 def run_action(button, action):

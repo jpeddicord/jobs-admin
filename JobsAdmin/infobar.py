@@ -29,7 +29,9 @@ class InfoManager:
         # set up the bar
         self.ib = gtk.InfoBar()
         self.active_index = index
-        self.ib.get_content_area().pack_start(gtk.Label(text))
+        lbl = gtk.Label()
+        lbl.set_markup(text)
+        self.ib.get_content_area().pack_start(lbl)
         self.ib.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
         if button:
             self.ib.add_button(button, gtk.RESPONSE_OK)

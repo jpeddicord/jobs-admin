@@ -243,7 +243,7 @@ class JobsAdminUI:
         if not self.active_job.settings or self.active_job.protected:
             self.frm_settings.hide_all()
             return
-        tbl = SettingsTable(self.active_job)
+        tbl = SettingsTable(self.active_job, self.active_index, self.infomanager)
         # apply button
         hbb = gtk.HButtonBox()
         hbb.props.layout_style = gtk.BUTTONBOX_END
