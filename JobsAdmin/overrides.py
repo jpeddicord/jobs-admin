@@ -51,6 +51,7 @@ _protected_jobs = [
     'mounted-dev',
     'mounted-tmp',
     'mounted-varrun',
+    'network-interface/lo',
     'ondemand',
     'pcmciautils',
     'plymouth',
