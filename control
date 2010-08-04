@@ -1,15 +1,20 @@
 Source: jobs-admin
 Section: admin
 Priority: optional
-Maintainer: Jacob Peddicord <jpeddicord@ubuntu.com>
-Build-Depends: debhelper (>= 7), cdbs (>= 0.4.49), python (>= 2.6), python-support (>= 0.5.3)
-Standards-Version: 3.8.4
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Jacob Peddicord <jpeddicord@ubuntu.com>
+Build-Depends: debhelper (>= 7), python (>= 2.6), python-support (>= 0.5.3), python-docutils, docutils-writer-manpage, intltool
+Standards-Version: 3.9.1
 Homepage: https://launchpad.net/jobs-admin
 
 Package: jobs-admin
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-gtk2, jobservice
-Recommends: apport-gtk
-Description: system job management
- jobs-admin is a frontend for jobservice. It allows for easy browsing and
- management of system jobs of any type that jobservice supports.
+Recommends: apport-gtk, xdg-utils
+Description: system job management utility
+ jobs-admin is a simple GTK+ utility that allows any administrator to easily
+ configure jobs (services) present on their system. Jobs may be enabled and
+ disabled, started and stopped, and can even provide tweakable settings about
+ services.
+ .
+ jobs-admin uses jobservice as its backend over dbus.
