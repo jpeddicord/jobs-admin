@@ -281,7 +281,7 @@ class JobsAdminUI:
             self.load_jobs()
             # infobar
             self.infomanager.hide()
-            if self.active_job.running:
+            if self.active_job.running and not '/' in self.active_job.name:
                 lbl = _("The settings have been saved.\nRestart the job to apply these changes.")
                 self.infomanager.show(self.active_index, lbl, _("_Restart"), self.job_restart)
         def error(e):
