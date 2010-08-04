@@ -1,0 +1,31 @@
+============
+ jobs-admin
+============
+
+---------------------------------
+graphical interface to jobservice
+---------------------------------
+
+:Author:            Jacob Peddicord <jpeddicord@ubuntu.com>
+:Date:              2010-08-04
+:Manual section:    1
+:Copyright:         This manual page is available under the terms of the GPL version 3.
+
+SYNOPSIS
+========
+
+**jobs-admin**
+
+DESCRIPTION
+===========
+
+jobs-admin does not accept any command-line options.
+
+jobs-admin is a GTK+ utility that acts as a frontend to jobservice, which
+manages system jobs.
+
+BUGS
+====
+
+Bugs can be reported at https://bugs.launchpad.net/jobsadmin.
+

@@ -30,5 +30,12 @@ with open('JobsAdmin/info.py', 'w') as f:
     for item in ('name', 'version', 'description', 'author', 'author_email', 'url'):
         f.write("%s = '%s'\n" % (item, setup_info[item]))
 
+# generate documentation
+try:
+    from docutils.core import publish_file
+    from docutils.writers import manpage
+    publish_file(source_path='manpage.txt', destination_path='jobs-admin.1', writer=manpage.Writer())
+except: pass
+
 setup(**setup_info)
 
