@@ -2,4 +2,5 @@ include COPYING
 include README
 include jobs-admin.desktop
 include jobs-admin.ui
+include manpage.txt
 recursive-include po *
