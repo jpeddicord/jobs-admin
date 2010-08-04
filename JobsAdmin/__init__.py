@@ -255,6 +255,9 @@ class JobsAdminUI:
         # only enable apply button when settings have been activated
         save.props.sensitive = False
         for w in tbl:
+            # for some reason a combobox doesn't emit focus-in-event...
+            if w.__class__.__name__ == 'ComboBox':
+                w.connect('changed', self.enable_settings_apply, None, save)
             w.connect('focus-in-event', self.enable_settings_apply, save)
         # remove the old table if present
         child = self.frm_settings.get_child()
