@@ -6,7 +6,7 @@ from subprocess import Popen, PIPE
 
 setup_info = dict(
     name='jobs-admin',
-    version='0.8.0~bzr',
+    version='0.8.0',
     description='System Job Administration',
     author='Jacob Peddicord',
     author_email='jpeddicord@ubuntu.com',

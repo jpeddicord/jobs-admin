@@ -1,4 +1,6 @@
 jobs-admin
 ==========
 
+https://launchpad.net/jobsadmin
 
+jobs-admin is a graphical frontend to allow for easy job/service administration. It uses jobservice as its backend.
