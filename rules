@@ -5,5 +5,5 @@
 	dh $@
 
 override_dh_clean:
-	rm -f jobs-admin.1
+	dh_clean jobs-admin.1
 
