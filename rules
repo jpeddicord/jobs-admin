@@ -4,3 +4,6 @@
 %:
 	dh $@
 
+override_dh_clean:
+	rm -f jobs-admin.1
+
