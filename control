@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Jacob Peddicord <jpeddicord@ubuntu.com>
-Build-Depends: debhelper (>= 7), python (>= 2.6), python-support (>= 0.5.3), python-docutils, docutils-writer-manpage, intltool
+Build-Depends: debhelper (>= 7.0.50~), python (>= 2.6), python-support (>= 0.5.3), python-docutils, docutils-writer-manpage, intltool
 Standards-Version: 3.9.1
 Homepage: https://launchpad.net/jobs-admin
 
@@ -17,4 +17,4 @@ Description: system job management utility
  disabled, started and stopped, and can even provide tweakable settings about
  services.
  .
- jobs-admin uses jobservice as its backend over dbus.
+ jobs-admin uses jobservice as its backend over D-Bus.
