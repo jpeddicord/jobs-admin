@@ -14,25 +14,13 @@
 # You should have received a copy of the GNU General Public License
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
+from LaunchpadIntegration import add_items, set_sourcepackagename
+from JobsAdmin.extras import ExtraBase
 
-class ExtraBase:
-    def __init__(self, ui):
-        pass
-    def update_ui(self):
-        pass
 
-class AllExtras(ExtraBase):
-
-    def __init__(self, ui):
-        self.ui = ui
-        self.extras = []
-        for extra in ('apportreport', 'lp'):
-            try:
-                mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
-                self.extras.append(mod.Extra(self.ui))
-            except Exception, e:
-                print e
+class Extra(ExtraBase):
+    """Add Launchpad menu items to the Help menu."""
     
-    def update_ui(self):
-        for extra in self.extras:
-            extra.update_ui()
+    def __init__(self, ui):
+        set_sourcepackagename('jobs-admin')
+        add_items(ui.menu_help, 0, False, True)
