@@ -10,7 +10,7 @@ Homepage: https://launchpad.net/jobs-admin
 Package: jobs-admin
 Architecture: all
 Depends: ${python:Depends}, ${misc:Depends}, python-gtk2, jobservice
-Recommends: apport-gtk, xdg-utils
+Recommends: apport-gtk, xdg-utils, python-launchpad-integration
 Description: system job management utility
  jobs-admin is a simple GTK+ utility that allows any administrator to easily
  configure jobs (services) present on their system. Jobs may be enabled and
