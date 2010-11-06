@@ -4,6 +4,6 @@ Comment=Manage system jobs present on your computer
 Icon=system-run
 Type=Application
 Terminal=false
-Exec=jobs-admin
+Exec=jobs-admin-gtk
 StartupNotify=true
 Categories=System;Settings;GTK;
