@@ -28,7 +28,7 @@ class AllExtras(ExtraBase):
         self.extras = []
         for extra in ('apportreport', 'lp'):
             try:
-                mod = __import__('JobsAdmin.extras.' + extra, fromlist=['Extra'])
+                mod = __import__('JobsAdmin.gtk.extras.' + extra, fromlist=['Extra'])
                 self.extras.append(mod.Extra(self.ui))
             except Exception, e:
                 print e

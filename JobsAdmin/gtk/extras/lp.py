@@ -15,7 +15,7 @@
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
 from LaunchpadIntegration import add_items, set_sourcepackagename
-from JobsAdmin.extras import ExtraBase
+from JobsAdmin.gtk.extras import ExtraBase
 
 
 class Extra(ExtraBase):

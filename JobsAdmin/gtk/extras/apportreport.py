@@ -15,11 +15,9 @@
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
 from subprocess import Popen
-import gtk
-from JobsAdmin.extras import ExtraBase
-
-# ensures this only runs on systems with apport
 import apport
+import gtk
+from JobsAdmin.gtk.extras import ExtraBase
 
 
 class Extra(ExtraBase):

@@ -23,7 +23,7 @@ gettext.install('jobs-admin', '/usr/share/locale', unicode=True)
 
 import gtk
 from dbus.mainloop.glib import DBusGMainLoop
-from JobsAdmin import JobsAdminUI
+from JobsAdmin.gtk import JobsAdminUI
 
 DBusGMainLoop(set_as_default=True)
 
