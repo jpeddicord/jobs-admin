@@ -5,10 +5,13 @@ Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Jacob Peddicord <jpeddicord@ubuntu.com>
 Build-Depends: debhelper (>= 7.0.50~), python (>= 2.6), python-support (>= 0.5.3), python-docutils, docutils-writer-manpage, intltool
 Standards-Version: 3.9.1
-Homepage: https://launchpad.net/jobs-admin
+Homepage: https://launchpad.net/jobsadmin
 
-Package: jobs-admin
+Package: jobs-admin-gtk
 Architecture: all
+Provides: jobs-admin
+Replaces: jobs-admin (<< 0.8.0+)
+Conflicts: jobs-admin (<< 0.8.0+)
 Depends: ${python:Depends}, ${misc:Depends}, python-gtk2, jobservice
 Recommends: apport-gtk, xdg-utils, python-launchpad-integration
 Description: system job management utility
@@ -18,3 +21,10 @@ Description: system job management utility
  services.
  .
  jobs-admin uses jobservice as its backend over D-Bus.
+
+Package: jobs-admin
+Architecture: all
+Depends: jobs-admin-gtk, ${misc:Depends}
+Description: transitional package
+ This is a transitional package for jobs-admin-gtk, the graphical
+ interface for jobservice. It can safely be removed.
