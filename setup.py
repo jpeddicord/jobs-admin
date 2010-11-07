@@ -34,7 +34,7 @@ with open('JobsAdmin/info.py', 'w') as f:
 try:
     from docutils.core import publish_file
     from docutils.writers import manpage
-    publish_file(source_path='manpage.txt', destination_path='jobs-admin.1', writer=manpage.Writer())
+    publish_file(source_path='manpage.txt', destination_path='jobs-admin-gtk.1', writer=manpage.Writer())
 except: pass
 
 setup(**setup_info)
