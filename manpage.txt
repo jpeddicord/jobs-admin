@@ -1,6 +1,6 @@
-============
- jobs-admin
-============
+================
+ jobs-admin-gtk
+================
 
 ---------------------------------
 graphical interface to jobservice
@@ -19,10 +19,10 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-jobs-admin does not accept any command-line options.
+jobs-admin-gtk does not accept any command-line options.
 
-jobs-admin is a GTK+ utility that acts as a frontend to jobservice, which
-manages system jobs.
+jobs-admin-gtk is a GTK+ utility that acts as a frontend to jobservice, which
+manages system jobs. For a command-line version of this utility, see **jobs-admin**.
 
 BUGS
 ====
