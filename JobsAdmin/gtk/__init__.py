@@ -187,10 +187,14 @@ class JobsAdminUI:
                 lbl = _("The job has been placed into manual mode.\nWould you like to stop it?")
                 self.infomanager.show(self.active_index, lbl, _("S_top"), self.job_stop)
         def error(e):
-            self.set_waiting(False)
-            self.show_job_info()
             if not 'DeniedByPolicy' in e._dbus_error_name:
-                raise e
+                lbl = _("Could not save state:") + "\n\t" + e.get_dbus_message()
+                lbl += "\n" + _("You can start or stop the job anyway.")
+                if job.running:
+                    self.infomanager.show(self.active_index, lbl, _("S_top"), self.job_stop, msgtype=gtk.MESSAGE_WARNING)
+                else:
+                    self.infomanager.show(self.active_index, lbl, _("_Start"), self.job_start, msgtype=gtk.MESSAGE_WARNING)
+            self.set_waiting(False)
         # async call
         if job.automatic:
             job.disable(reply_handler=reply, error_handler=error)
