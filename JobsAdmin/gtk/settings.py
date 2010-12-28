@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with jobs-admin.  If not, see <http://www.gnu.org/licenses/>.
 
-from subprocess import Popen
+from subprocess import Popen, PIPE
 from pwd import getpwall
 from grp import getgrall
 import gtk
@@ -128,7 +128,7 @@ class SettingsTable(gtk.Table):
                     for vname, vdesc in vals:
                         # check to see if it exists
                         check = vname.split()[0]
-                        p = Popen(['which', check])
+                        p = Popen(['which', check], stdout=PIPE)
                         if not check_exec(check):
                             missing = check
                             continue
