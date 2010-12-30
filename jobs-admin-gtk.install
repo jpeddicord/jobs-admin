@@ -1,5 +1,5 @@
-debian/tmp/usr/lib/*/*/JobsAdmin
+debian/tmp/usr/lib/*/*/JobsAdmin/gtk
 debian/tmp/usr/bin/jobs-admin-gtk
-debian/tmp/usr/share/jobs-admin
-debian/tmp/usr/share/applications
+debian/tmp/usr/share/jobs-admin/jobs-admin.ui
+debian/tmp/usr/share/applications/jobs-admin-gtk.desktop
 debian/tmp/usr/share/
