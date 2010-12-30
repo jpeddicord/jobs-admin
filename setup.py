@@ -14,7 +14,7 @@ setup_info = dict(
     packages=['JobsAdmin', 'JobsAdmin.gtk', 'JobsAdmin.gtk.extras'],
     scripts=['jobs-admin-gtk'],
     data_files=[
-        ('share/applications', ['jobs-admin.desktop']),
+        ('share/applications', ['jobs-admin-gtk.desktop']),
         ('share/jobs-admin', ['jobs-admin.ui']),
     ]
 )
