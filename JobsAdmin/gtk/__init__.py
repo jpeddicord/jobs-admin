@@ -20,7 +20,6 @@ from dbus.exceptions import DBusException
 from JobsAdmin import BACKEND_NAMES
 from JobsAdmin.remote import RemoteJobService
 from JobsAdmin.gtk.context import ContextMenu
-from JobsAdmin.gtk.extras import AllExtras
 from JobsAdmin.gtk.infobar import InfoManager
 from JobsAdmin.gtk.settings import SettingsTable
 
@@ -87,13 +86,6 @@ class JobsAdminUI:
         self.context = ContextMenu(self.act_job_start, self.act_job_stop)
         self.tv_jobs.connect('button-press-event', self.context.popup)
         
-        # this isn't a gtk property, it's for extras to use
-        for m in (self.menu_jobs, self.menu_edit, self.menu_help):
-            m.extended = False
-        
-        # load extras
-        self.extras = AllExtras(self)
-    
     def load_jobs(self, *args):
         """Load the job listing and populate the liststore."""
         self.lst_jobs.clear()
@@ -163,8 +155,6 @@ class JobsAdminUI:
         # clear the infobar
         if self.active_index != self.infomanager.active_index:
             self.infomanager.hide()
-        # finally, tell our extras about the ui changes
-        self.extras.update_ui()
     
     def auto_toggle(self, cr, path):
         self.active_index = int(path)
